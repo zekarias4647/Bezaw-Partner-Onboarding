@@ -43,4 +43,4 @@ export enum Step {
   SUMMARY = 3
 }
 
-export type ViewState = 'LANDING' | 'REGISTER' | 'BRANCH_LOGIN';
+export type ViewState = 'LANDING' | 'REGISTER' | 'BRANCH_LOGIN' | 'SELECT_BRANCH';

@@ -17,6 +17,7 @@ import ManagerSetup from './components/ManagerSetup';
 import Summary from './components/Summary';
 import Landing from './components/Landing';
 import BranchLogin from './components/BranchLogin';
+import SelectBranch from './components/SelectBranch';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('LANDING');
@@ -24,18 +25,24 @@ const App: React.FC = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   
   const [supermarket, setSupermarket] = useState<SupermarketData>({
-    name: '',
+    name: 'Mock Supermarket Corp',
     logo: '',
     vatCert: '',
     businessLicense: '',
-    tin: '',
-    email: '',
-    phone: '',
+    tin: '1234567890',
+    email: 'admin@mock.com',
+    phone: '+251911223344',
     website: '',
-    bankAccounts: [{ bankName: '', accountName: '', accountNumber: '' }],
-    regCode: ''
+    bankAccounts: [{ bankName: 'CBE', accountName: 'Mock Corp', accountNumber: '1000123456789' }],
+    regCode: 'BEZAW-7H2K'
   });
-  const [branches, setBranches] = useState<BranchData[]>([]);
+
+  // Mock initial branches for demonstration of the "Existing Partner" flow
+  const [branches, setBranches] = useState<BranchData[]>([
+    { id: 'b1', name: 'Bole Medhanialem', address: 'Bole, near the church', coordinates: '9.01, 38.78', phone: '+251900000001', isBusy: false },
+    { id: 'b2', name: 'Kazanchis Branch', address: 'Kazanchis, behind Intercontinental', coordinates: '9.02, 38.76', phone: '+251900000002', isBusy: false }
+  ]);
+  
   const [managers, setManagers] = useState<ManagerData[]>([]);
 
   // Initialize theme from system preference or local storage
@@ -163,11 +170,23 @@ const App: React.FC = () => {
         
         {view === 'BRANCH_LOGIN' && (
           <BranchLogin 
-            onSuccess={() => {
+            onSuccess={() => setView('SELECT_BRANCH')} 
+            onBack={resetToLanding}
+          />
+        )}
+
+        {view === 'SELECT_BRANCH' && (
+          <SelectBranch 
+            branches={branches}
+            onSelect={(branch) => {
+              setView('REGISTER');
+              setCurrentStep(Step.MANAGERS);
+            }}
+            onAddNew={() => {
               setView('REGISTER');
               setCurrentStep(Step.BRANCHES);
-            }} 
-            onBack={resetToLanding}
+            }}
+            onBack={() => setView('BRANCH_LOGIN')}
           />
         )}
 
