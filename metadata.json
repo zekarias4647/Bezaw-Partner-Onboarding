@@ -1,0 +1,7 @@
+{
+  "name": "Bezaw Partner Onboarding",
+  "description": "A high-end, multi-step registration portal for supermarkets and branches to join the Bezaw drive-through ecosystem.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
