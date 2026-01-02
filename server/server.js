@@ -7,9 +7,13 @@ const { query } = require('./connection/db'); // import your db.js
 const path = require('path');
 const OnboardingRoutes = require('./router/onboarding');
 
+const helmet = require('helmet');
+
 const app = express();
 
-
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 app.use(cors());
 app.use(morgan('dev'));
 app.use(bodyParser.json());

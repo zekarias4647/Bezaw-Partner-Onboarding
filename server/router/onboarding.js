@@ -7,6 +7,7 @@ const fs = require('fs');
 const { query } = require('../connection/db');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
+const { sendSupermarketId, sendManagerCredentials } = require('../utils/email');
 
 // Ensure uploads directory exists
 const uploadDir = path.join(__dirname, '..', 'uploads');
@@ -27,7 +28,18 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     limits: {
-        fieldSize: 25 * 1024 * 1024 // 25MB to allow large JSON payloads with base64 strings
+        fieldSize: 25 * 1024 * 1024 // 25MB
+    },
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png|pdf/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+
+        if (mimetype && extname) {
+            return cb(null, true);
+        } else {
+            cb(new Error('Only .png, .jpg, .jpeg and .pdf format allowed!'));
+        }
     }
 });
 
@@ -58,6 +70,7 @@ router.post('/register', upload.fields([
     { name: 'businessLicense', maxCount: 1 }
 ]), async (req, res) => {
     let { supermarket, branches, managers } = req.body;
+    let managersToEmail = [];
 
     try {
         // Parse JSON strings if needed
@@ -144,6 +157,13 @@ router.post('/register', upload.fields([
                 const passwordToHash = manager.password || 'TempPass123!';
                 const hashedPassword = await bcrypt.hash(passwordToHash, 10);
 
+                managersToEmail.push({
+                    email: manager.email,
+                    name: manager.name,
+                    password: passwordToHash,
+                    branchId: linkedBranchId
+                });
+
                 await query(
                     `INSERT INTO managers (id, branch_id, name, email, phone, password_hash)
                      VALUES ($1, $2, $3, $4, $5, $6)`,
@@ -153,12 +173,29 @@ router.post('/register', upload.fields([
         }
 
         await query('COMMIT');
+
+        // Send Emails
+        try {
+            console.log(`Sending Welcome Email to Supermarket: ${supermarket.email}`);
+            await sendSupermarketId(supermarket.email, supermarket.name, supermarketId);
+
+            if (managersToEmail.length > 0) {
+                console.log(`Sending emails to ${managersToEmail.length} managers...`);
+                await Promise.all(managersToEmail.map(mgr =>
+                    sendManagerCredentials(mgr.email, mgr.name, mgr.password, mgr.branchId)
+                ));
+            }
+        } catch (emailErr) {
+            console.error('Email sending warning:', emailErr);
+            // We do not fail the request if email fails, but we log it.
+        }
+
         res.status(201).json({ message: 'Registration successful', partnerId: supermarketId });
 
     } catch (err) {
         await query('ROLLBACK');
         console.error('Registration error:', err);
-        res.status(500).json({ error: 'Registration failed', details: err.message });
+        res.status(500).json({ error: 'Registration failed. Please try again later.' });
     }
 });
 
@@ -262,6 +299,9 @@ router.post('/managers', authenticateToken, async (req, res) => {
              VALUES ($1, $2, $3, $4, $5, $6)`,
             [newManagerId, branchId, name, email, phone || '', hashedPassword]
         );
+
+        // Send Manager Email
+        sendManagerCredentials(email, name, passwordToHash, branchId);
 
         res.status(201).json({ success: true, message: 'Manager added successfully', managerId: newManagerId });
     } catch (err) {

@@ -95,8 +95,8 @@ const App: React.FC = () => {
   };
 
   const resetToLanding = () => {
+    resetForm();
     setView('LANDING');
-    setCurrentStep(Step.BUSINESS_INFO);
   };
 
   const resetForm = () => {
