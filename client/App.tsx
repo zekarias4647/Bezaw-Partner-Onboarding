@@ -42,7 +42,7 @@ const App: React.FC = () => {
     email: '',
     phone: '',
     website: '',
-    bankAccounts: [], // Start with no bank accounts
+
     regCode: ''
   });
 
@@ -59,7 +59,7 @@ const App: React.FC = () => {
     if (supermarket.regCode) {
       try {
         const token = localStorage.getItem('authToken');
-        const res = await fetch(`http://localhost:5000/api/onboard/${supermarket.regCode}/branches`, {
+        const res = await fetch(`http://localhost:5002/api/onboard/${supermarket.regCode}/branches`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -109,7 +109,7 @@ const App: React.FC = () => {
       email: '',
       phone: '',
       website: '',
-      bankAccounts: [],
+
       regCode: ''
     });
     setBranches([]);
@@ -228,13 +228,12 @@ const App: React.FC = () => {
                 email: data.email,
                 phone: data.phone,
                 website: data.website,
-                // We'll initialize empty or fetch if needed
-                bankAccounts: []
+
               };
               setSupermarket(mappedSupermarket);
 
               try {
-                const res = await fetch(`http://localhost:5000/api/onboard/${data.id}/branches`, {
+                const res = await fetch(`http://localhost:5002/api/onboard/${data.id}/branches`, {
                   headers: {
                     'Authorization': `Bearer ${token}`
                   }

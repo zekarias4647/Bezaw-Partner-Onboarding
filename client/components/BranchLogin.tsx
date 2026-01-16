@@ -21,7 +21,7 @@ const BranchLogin: React.FC<Props> = ({ onSuccess, onBack }) => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/onboard/login', {
+      const response = await fetch('http://localhost:5002/api/onboard/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ regCode: code })

@@ -34,7 +34,7 @@ const SingleBranchForm: React.FC<Props> = ({ supermarketId, onSuccess, onCancel 
         setLoading(true);
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch(`http://localhost:5000/api/onboard/${supermarketId}/branches`, {
+            const response = await fetch(`http://localhost:5002/api/onboard/${supermarketId}/branches`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

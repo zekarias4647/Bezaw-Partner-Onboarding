@@ -67,7 +67,8 @@ const authenticateToken = (req, res, next) => {
 router.post('/register', upload.fields([
     { name: 'logo', maxCount: 1 },
     { name: 'vatCert', maxCount: 1 },
-    { name: 'businessLicense', maxCount: 1 }
+    { name: 'businessLicense', maxCount: 1 },
+    { name: 'image', maxCount: 1 }
 ]), async (req, res) => {
     let { supermarket, branches, managers } = req.body;
     let managersToEmail = [];
@@ -93,6 +94,9 @@ router.post('/register', upload.fields([
             if (req.files['businessLicense']) {
                 supermarket.businessLicense = `uploads/${req.files['businessLicense'][0].originalname}`;
             }
+            if (req.files['image']) {
+                supermarket.image = `uploads/${req.files['image'][0].originalname}`;
+            }
         }
 
         // Start DB transaction
@@ -100,8 +104,8 @@ router.post('/register', upload.fields([
 
         // 1. Insert Supermarket (ID matches RegCode from UI)
         await query(
-            `INSERT INTO supermarkets (id, name, logo, vat_cert, business_license, tin, email, phone, website)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+            `INSERT INTO supermarkets (id, name, logo, vat_cert, business_license, tin, email, phone, website, image)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
             [
                 supermarket.regCode,
                 supermarket.name,
@@ -111,22 +115,14 @@ router.post('/register', upload.fields([
                 supermarket.tin,
                 supermarket.email,
                 supermarket.phone,
-                supermarket.website
+                supermarket.website,
+                supermarket.image || null
             ]
         );
 
         const supermarketId = supermarket.regCode;
 
-        // 2. Insert Bank Accounts
-        if (supermarket.bankAccounts && supermarket.bankAccounts.length > 0) {
-            for (const account of supermarket.bankAccounts) {
-                await query(
-                    `INSERT INTO bank_accounts (supermarket_id, bank_name, account_name, account_number)
-                     VALUES ($1, $2, $3, $4)`,
-                    [supermarketId, account.bankName, account.accountName, account.accountNumber]
-                );
-            }
-        }
+
 
         // 3. Insert Branches (Generate IDs)
         const branchIdMap = new Map(); // Map UI-ID -> Server-ID

@@ -10,7 +10,7 @@ const pool = new Pool({
   database: process.env.DB_NAME,
   port: process.env.DB_PORT,
   max: 20, // optional: max number of clients in the pool
- 
+
 });
 
 // Test the connection

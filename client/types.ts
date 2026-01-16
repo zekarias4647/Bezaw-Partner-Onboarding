@@ -1,9 +1,5 @@
 
-export interface BankAccount {
-  bankName: string;
-  accountName: string;
-  accountNumber: string;
-}
+
 
 export interface SupermarketData {
   name: string;
@@ -14,11 +10,13 @@ export interface SupermarketData {
   email: string;
   phone: string;
   website: string;
-  bankAccounts: BankAccount[];
+
   regCode: string; // New: Unique identifier for the supermarket
   logoFile?: File;
   vatCertFile?: File;
   businessLicenseFile?: File;
+  image?: string;
+  imageFile?: File;
 }
 
 export interface BranchData {

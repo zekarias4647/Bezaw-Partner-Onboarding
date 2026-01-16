@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { SupermarketData, BranchData, ManagerData } from '../types';
-import { Rocket, Send, ArrowLeft, Building2, Store, Users, CheckCircle, Landmark, FileCheck, Fingerprint } from 'lucide-react';
+import { Rocket, Send, ArrowLeft, Building2, Store, Users, CheckCircle, FileCheck, Fingerprint } from 'lucide-react';
 
 interface Props {
   supermarket: SupermarketData;
@@ -33,6 +33,9 @@ const Summary: React.FC<Props> = ({ supermarket, branches, managers, onBack, onC
       if (supermarket.businessLicenseFile) {
         formData.append('businessLicense', supermarket.businessLicenseFile);
       }
+      if (supermarket.imageFile) {
+        formData.append('image', supermarket.imageFile);
+      }
 
       // Create a clean version of supermarket data for the JSON payload
       const { logoFile, vatCertFile, businessLicenseFile, ...cleanSupermarket } = supermarket;
@@ -41,7 +44,7 @@ const Summary: React.FC<Props> = ({ supermarket, branches, managers, onBack, onC
       formData.append('branches', JSON.stringify(branches));
       formData.append('managers', JSON.stringify(managers));
 
-      const response = await fetch('http://localhost:5000/api/onboard/register', {
+      const response = await fetch('http://localhost:5002/api/onboard/register', {
         method: 'POST',
         body: formData,
       });
@@ -144,23 +147,7 @@ const Summary: React.FC<Props> = ({ supermarket, branches, managers, onBack, onC
           </div>
         </div>
 
-        {/* Banks Card */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 space-y-6 shadow-sm">
-          <h3 className="font-black text-slate-900 dark:text-white flex items-center gap-2 uppercase tracking-widest text-xs">
-            <Landmark size={18} className="text-blue-500" /> Settlement Accounts
-          </h3>
-          <div className="space-y-3 max-h-[180px] overflow-y-auto pr-2 custom-scrollbar">
-            {supermarket.bankAccounts.map((acc, i) => (
-              <div key={i} className="text-xs p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl flex justify-between items-center border border-slate-100 dark:border-slate-700">
-                <div>
-                  <p className="font-black text-black dark:text-white mb-0.5">{acc.bankName}</p>
-                  <p className="text-[10px] text-slate-500 uppercase font-bold">{acc.accountName}</p>
-                </div>
-                <p className="font-mono text-black dark:text-emerald-500 font-bold">{acc.accountNumber}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+
 
         {/* Network & Team Combined */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-12">
