@@ -44,7 +44,7 @@ const Summary: React.FC<Props> = ({ supermarket, branches, managers, onBack, onC
       formData.append('branches', JSON.stringify(branches));
       formData.append('managers', JSON.stringify(managers));
 
-      const response = await fetch('http://localhost:5002/api/onboard/register', {
+      const response = await fetch('https://onboardingapi.ristestate.com/api/onboard/register', {
         method: 'POST',
         body: formData,
       });

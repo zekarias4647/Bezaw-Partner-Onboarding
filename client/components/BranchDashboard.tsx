@@ -18,7 +18,7 @@ const BranchDashboard: React.FC<Props> = ({ branch, onBack }) => {
         try {
             setLoading(true);
             const token = localStorage.getItem('authToken');
-            const response = await fetch(`http://localhost:5002/api/onboard/branches/${branch.id}/managers`, {
+            const response = await fetch(`https://onboardingapi.ristestate.com/api/onboard/branches/${branch.id}/managers`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -129,7 +129,7 @@ const BranchDashboard: React.FC<Props> = ({ branch, onBack }) => {
                                             onClick={async () => {
                                                 try {
                                                     const token = localStorage.getItem('authToken');
-                                                    const res = await fetch(`http://localhost:5002/api/onboard/managers/${manager.id}`, {
+                                                    const res = await fetch(`https://onboardingapi.ristestate.com/api/onboard/managers/${manager.id}`, {
                                                         method: 'DELETE',
                                                         headers: { 'Authorization': `Bearer ${token}` }
                                                     });

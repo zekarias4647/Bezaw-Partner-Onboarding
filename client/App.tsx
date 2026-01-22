@@ -59,7 +59,7 @@ const App: React.FC = () => {
     if (supermarket.regCode) {
       try {
         const token = localStorage.getItem('authToken');
-        const res = await fetch(`http://localhost:5002/api/onboard/${supermarket.regCode}/branches`, {
+        const res = await fetch(`https://onboardingapi.ristestate.com/api/onboard/${supermarket.regCode}/branches`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -233,7 +233,7 @@ const App: React.FC = () => {
               setSupermarket(mappedSupermarket);
 
               try {
-                const res = await fetch(`http://localhost:5002/api/onboard/${data.id}/branches`, {
+                const res = await fetch(`https://onboardingapi.ristestate.com/api/onboard/${data.id}/branches`, {
                   headers: {
                     'Authorization': `Bearer ${token}`
                   }
