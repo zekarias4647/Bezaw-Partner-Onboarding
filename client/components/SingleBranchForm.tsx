@@ -1,19 +1,21 @@
 
 import React, { useState } from 'react';
-import { Store, MapPin, Phone, Wand2, X, Plus } from 'lucide-react';
+import { Store, MapPin, Phone, Wand2, X, Plus, Clock } from 'lucide-react';
 import { suggestCoordinates } from '../services/geminiService';
 
 interface Props {
-    supermarketId: string;
+    vendorId: string;
     onSuccess: () => void;
     onCancel: () => void;
 }
 
-const SingleBranchForm: React.FC<Props> = ({ supermarketId, onSuccess, onCancel }) => {
+const SingleBranchForm: React.FC<Props> = ({ vendorId, onSuccess, onCancel }) => {
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
     const [coordinates, setCoordinates] = useState('');
     const [phone, setPhone] = useState('');
+    const [openingHours, setOpeningHours] = useState('');
+    const [closingHours, setClosingHours] = useState('');
     const [loading, setLoading] = useState(false);
     const [isSuggesting, setIsSuggesting] = useState(false);
 
@@ -34,7 +36,7 @@ const SingleBranchForm: React.FC<Props> = ({ supermarketId, onSuccess, onCancel 
         setLoading(true);
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch(`https://onboardingapi.ristestate.com/api/onboard/${supermarketId}/branches`, {
+            const response = await fetch(`http://localhost:5002/api/onboard/${vendorId}/branches`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -44,7 +46,9 @@ const SingleBranchForm: React.FC<Props> = ({ supermarketId, onSuccess, onCancel 
                     name,
                     address,
                     coordinates,
-                    phone
+                    phone,
+                    openingHours,
+                    closingHours
                 })
             });
 
@@ -109,6 +113,23 @@ const SingleBranchForm: React.FC<Props> = ({ supermarketId, onSuccess, onCancel 
                             <div className="relative">
                                 <Phone className="absolute left-4 top-3.5 text-slate-300" size={18} />
                                 <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+251..." className={`${inputStyles} pl-12`} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Opening Time</label>
+                            <div className="relative">
+                                <Clock className="absolute left-4 top-3.5 text-slate-300" size={18} />
+                                <input type="time" value={openingHours} onChange={e => setOpeningHours(e.target.value)} className={`${inputStyles} pl-12`} />
+                            </div>
+                        </div>
+                        <div className="space-y-1.5">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Closing Time</label>
+                            <div className="relative">
+                                <Clock className="absolute left-4 top-3.5 text-slate-300" size={18} />
+                                <input type="time" value={closingHours} onChange={e => setClosingHours(e.target.value)} className={`${inputStyles} pl-12`} />
                             </div>
                         </div>
                     </div>

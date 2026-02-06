@@ -1,7 +1,7 @@
 
 
 
-export interface SupermarketData {
+export interface VendorData {
   name: string;
   logo: string;
   vatCert: string;
@@ -11,7 +11,8 @@ export interface SupermarketData {
   phone: string;
   website: string;
 
-  regCode: string; // New: Unique identifier for the supermarket
+  regCode: string; // New: Unique identifier for the vendor
+  businessType: string;
   logoFile?: File;
   vatCertFile?: File;
   businessLicenseFile?: File;
@@ -25,6 +26,8 @@ export interface BranchData {
   address: string;
   coordinates: string;
   phone: string;
+  openingHours?: string;
+  closingHours?: string;
   isBusy: boolean;
 }
 

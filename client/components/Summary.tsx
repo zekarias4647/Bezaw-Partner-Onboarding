@@ -1,17 +1,17 @@
 
 import React, { useState } from 'react';
-import { SupermarketData, BranchData, ManagerData } from '../types';
+import { VendorData, BranchData, ManagerData } from '../types';
 import { Rocket, Send, ArrowLeft, Building2, Store, Users, CheckCircle, FileCheck, Fingerprint } from 'lucide-react';
 
 interface Props {
-  supermarket: SupermarketData;
+  vendor: VendorData;
   branches: BranchData[];
   managers: ManagerData[];
   onBack: () => void;
   onComplete: () => void;
 }
 
-const Summary: React.FC<Props> = ({ supermarket, branches, managers, onBack, onComplete }) => {
+const Summary: React.FC<Props> = ({ vendor, branches, managers, onBack, onComplete }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -24,27 +24,27 @@ const Summary: React.FC<Props> = ({ supermarket, branches, managers, onBack, onC
       const formData = new FormData();
 
       // Append files if they exist
-      if (supermarket.logoFile) {
-        formData.append('logo', supermarket.logoFile);
+      if (vendor.logoFile) {
+        formData.append('logo', vendor.logoFile);
       }
-      if (supermarket.vatCertFile) {
-        formData.append('vatCert', supermarket.vatCertFile);
+      if (vendor.vatCertFile) {
+        formData.append('vatCert', vendor.vatCertFile);
       }
-      if (supermarket.businessLicenseFile) {
-        formData.append('businessLicense', supermarket.businessLicenseFile);
+      if (vendor.businessLicenseFile) {
+        formData.append('businessLicense', vendor.businessLicenseFile);
       }
-      if (supermarket.imageFile) {
-        formData.append('image', supermarket.imageFile);
+      if (vendor.imageFile) {
+        formData.append('image', vendor.imageFile);
       }
 
-      // Create a clean version of supermarket data for the JSON payload
-      const { logoFile, vatCertFile, businessLicenseFile, ...cleanSupermarket } = supermarket;
+      // Create a clean version of vendor data for the JSON payload
+      const { logoFile, vatCertFile, businessLicenseFile, ...cleanVendor } = vendor;
 
-      formData.append('supermarket', JSON.stringify(cleanSupermarket));
+      formData.append('vendor', JSON.stringify(cleanVendor));
       formData.append('branches', JSON.stringify(branches));
       formData.append('managers', JSON.stringify(managers));
 
-      const response = await fetch('https://onboardingapi.ristestate.com/api/onboard/register', {
+      const response = await fetch('http://localhost:5002/api/onboard/register', {
         method: 'POST',
         body: formData,
       });
@@ -58,8 +58,8 @@ const Summary: React.FC<Props> = ({ supermarket, branches, managers, onBack, onC
 
       // Capture details for the success view
       setSuccessDetails({
-        name: supermarket.name,
-        regCode: supermarket.regCode
+        name: vendor.name,
+        regCode: vendor.regCode
       });
 
       // Delay slightly effectively showing the success state
@@ -110,9 +110,9 @@ const Summary: React.FC<Props> = ({ supermarket, branches, managers, onBack, onC
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 space-y-6 shadow-sm">
           <div className="flex items-center justify-between">
             <h3 className="font-black text-slate-900 dark:text-white flex items-center gap-2 uppercase tracking-widest text-xs">
-              <Building2 size={18} className="text-emerald-500" /> Supermarket Profile
+              <Building2 size={18} className="text-emerald-500" /> Vendor Profile
             </h3>
-            {supermarket.logo && <img src={supermarket.logo} className="w-12 h-12 object-cover rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />}
+            {vendor.logo && <img src={vendor.logo} className="w-12 h-12 object-cover rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />}
           </div>
 
           <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl flex items-center justify-between border border-slate-100 dark:border-slate-700">
@@ -120,7 +120,7 @@ const Summary: React.FC<Props> = ({ supermarket, branches, managers, onBack, onC
               <Fingerprint className="text-emerald-600" size={20} />
               <div>
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Master ID Code</p>
-                <p className="font-mono text-black dark:text-emerald-400 font-bold">{supermarket.regCode}</p>
+                <p className="font-mono text-black dark:text-emerald-400 font-bold">{vendor.regCode}</p>
               </div>
             </div>
             <FileCheck size={20} className="text-emerald-500" />
@@ -129,11 +129,11 @@ const Summary: React.FC<Props> = ({ supermarket, branches, managers, onBack, onC
           <div className="grid grid-cols-2 gap-6 text-sm">
             <div>
               <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Brand Name</p>
-              <p className="text-black dark:text-white font-bold">{supermarket.name}</p>
+              <p className="text-black dark:text-white font-bold">{vendor.name}</p>
             </div>
             <div>
               <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Tax Ident. (TIN)</p>
-              <p className="text-black dark:text-white font-bold">{supermarket.tin}</p>
+              <p className="text-black dark:text-white font-bold">{vendor.tin}</p>
             </div>
           </div>
 

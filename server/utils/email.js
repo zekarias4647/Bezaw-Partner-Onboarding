@@ -19,12 +19,12 @@ transporter.verify(function (error, success) {
 });
 
 /**
- * Sends the Supermarket ID to the registered email.
+ * Sends the Store ID to the registered email.
  * @param {string} email - Recipient email
- * @param {string} name - Supermarket Name
- * @param {string} id - Supermarket ID (RegCode)
+ * @param {string} name - Vendor Name
+ * @param {string} id - Vendor ID (RegCode)
  */
-const sendSupermarketId = async (email, name, id) => {
+const sendStoreId = async (email, name, id) => {
     try {
         const mailOptions = {
             from: 'Bezaw<' + process.env.EMAIL_USER + '>',
@@ -88,10 +88,10 @@ const sendSupermarketId = async (email, name, id) => {
         };
 
         const info = await transporter.sendMail(mailOptions);
-        console.log('Supermarket ID email sent:', info.response);
+        console.log('Vendor ID email sent:', info.response);
         return { success: true };
     } catch (error) {
-        console.error('Error sending Supermarket ID email:', error);
+        console.error('Error sending Vendor ID email:', error);
         return { success: false, error };
     }
 };
@@ -190,6 +190,6 @@ const sendManagerCredentials = async (email, name, password, branchId) => {
 };
 
 module.exports = {
-    sendSupermarketId,
+    sendStoreId,
     sendManagerCredentials
 };

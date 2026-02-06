@@ -14,7 +14,7 @@ const Landing: React.FC<Props> = ({ onSelectRegister, onSelectLogin }) => {
           <Zap size={12} fill="currentColor" /> Welcome to the Future
         </div>
         <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white leading-[1.1]">
-          Grow your supermarket <span className="text-emerald-600">exponentially.</span>
+          Grow your vendor <span className="text-emerald-600">exponentially.</span>
         </h1>
         <p className="text-base text-slate-500 dark:text-slate-400 font-medium">
           Choose an option below to get started with the Bezaw Partner network.
@@ -30,7 +30,7 @@ const Landing: React.FC<Props> = ({ onSelectRegister, onSelectLogin }) => {
           <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <UserPlus size={24} />
           </div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Register Supermarket</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Register Vendor</h3>
           <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-4">
             Start your journey as a primary partner. Set up your global profile, financial details, and master account.
           </p>

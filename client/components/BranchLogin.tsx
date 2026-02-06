@@ -2,10 +2,10 @@
 import React, { useState } from 'react';
 import { Key, ArrowRight, ArrowLeft, ShieldCheck } from 'lucide-react';
 
-import { SupermarketData } from '../types';
+import { VendorData } from '../types';
 
 interface Props {
-  onSuccess: (supermarket: SupermarketData, token: string) => void;
+  onSuccess: (vendor: VendorData, token: string) => void;
   onBack: () => void;
 }
 
@@ -21,7 +21,7 @@ const BranchLogin: React.FC<Props> = ({ onSuccess, onBack }) => {
     setError('');
 
     try {
-      const response = await fetch('https://onboardingapi.ristestate.com/api/onboard/login', {
+      const response = await fetch('http://localhost:5002/api/onboard/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ regCode: code })
@@ -33,7 +33,7 @@ const BranchLogin: React.FC<Props> = ({ onSuccess, onBack }) => {
         throw new Error(data.error || 'Login failed');
       }
 
-      onSuccess(data.supermarket, data.token);
+      onSuccess(data.vendor, data.token);
     } catch (err: any) {
       setError(err.message);
     } finally {

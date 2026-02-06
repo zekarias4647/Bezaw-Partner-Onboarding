@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { BranchData } from '../types';
 import { suggestCoordinates } from '../services/geminiService';
-import { MapPin, Plus, Trash2, Phone, ChevronLeft, ChevronRight, Wand2, Map } from 'lucide-react';
+import { MapPin, Plus, Trash2, Phone, ChevronLeft, ChevronRight, Wand2, Map, Clock } from 'lucide-react';
 
 interface Props {
   branches: BranchData[];
@@ -21,6 +21,8 @@ const BranchSetup: React.FC<Props> = ({ branches, onChange, onNext, onBack }) =>
       address: '',
       coordinates: '',
       phone: '',
+      openingHours: '',
+      closingHours: '',
       isBusy: false
     };
     onChange([...branches, newBranch]);
@@ -128,6 +130,32 @@ const BranchSetup: React.FC<Props> = ({ branches, onChange, onNext, onBack }) =>
                     value={branch.phone}
                     onChange={(e) => updateBranch(branch.id, 'phone', e.target.value)}
                     placeholder="+251 9..."
+                    className={`${inputStyles} pl-10`}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Opening Time</label>
+                <div className="relative">
+                  <Clock className="absolute left-3 top-3.5 text-slate-300" size={18} />
+                  <input
+                    type="time"
+                    value={branch.openingHours || ''}
+                    onChange={(e) => updateBranch(branch.id, 'openingHours', e.target.value)}
+                    className={`${inputStyles} pl-10`}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Closing Time</label>
+                <div className="relative">
+                  <Clock className="absolute left-3 top-3.5 text-slate-300" size={18} />
+                  <input
+                    type="time"
+                    value={branch.closingHours || ''}
+                    onChange={(e) => updateBranch(branch.id, 'closingHours', e.target.value)}
                     className={`${inputStyles} pl-10`}
                   />
                 </div>

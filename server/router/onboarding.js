@@ -7,7 +7,7 @@ const fs = require('fs');
 const { query } = require('../connection/db');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
-const { sendSupermarketId, sendManagerCredentials } = require('../utils/email');
+const { sendStoreId, sendManagerCredentials } = require('../utils/email');
 
 // Ensure uploads directory exists
 const uploadDir = path.join(__dirname, '..', 'uploads');
@@ -70,32 +70,32 @@ router.post('/register', upload.fields([
     { name: 'businessLicense', maxCount: 1 },
     { name: 'image', maxCount: 1 }
 ]), async (req, res) => {
-    let { supermarket, branches, managers } = req.body;
+    let { vendor, branches, managers } = req.body;
     let managersToEmail = [];
 
     try {
         // Parse JSON strings if needed
-        if (typeof supermarket === 'string') supermarket = JSON.parse(supermarket);
+        if (typeof vendor === 'string') vendor = JSON.parse(vendor);
         if (typeof branches === 'string') branches = JSON.parse(branches);
         if (typeof managers === 'string') managers = JSON.parse(managers);
 
-        if (!supermarket || !branches || !managers) {
+        if (!vendor || !branches || !managers) {
             return res.status(400).json({ error: 'Missing required data' });
         }
 
         // Handle uploaded files
         if (req.files) {
             if (req.files['logo']) {
-                supermarket.logo = `uploads/${req.files['logo'][0].originalname}`;
+                vendor.logo = `uploads/${req.files['logo'][0].originalname}`;
             }
             if (req.files['vatCert']) {
-                supermarket.vatCert = `uploads/${req.files['vatCert'][0].originalname}`;
+                vendor.vatCert = `uploads/${req.files['vatCert'][0].originalname}`;
             }
             if (req.files['businessLicense']) {
-                supermarket.businessLicense = `uploads/${req.files['businessLicense'][0].originalname}`;
+                vendor.businessLicense = `uploads/${req.files['businessLicense'][0].originalname}`;
             }
             if (req.files['image']) {
-                supermarket.image = `uploads/${req.files['image'][0].originalname}`;
+                vendor.image = `uploads/${req.files['image'][0].originalname}`;
             }
         }
 
@@ -104,23 +104,24 @@ router.post('/register', upload.fields([
 
         // 1. Insert Supermarket (ID matches RegCode from UI)
         await query(
-            `INSERT INTO supermarkets (id, name, logo, vat_cert, business_license, tin, email, phone, website, image)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+            `INSERT INTO vendors (id, name, logo, vat_cert, business_license, tin, email, phone, website, image, business_type)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
             [
-                supermarket.regCode,
-                supermarket.name,
-                supermarket.logo,
-                supermarket.vatCert,
-                supermarket.businessLicense,
-                supermarket.tin,
-                supermarket.email,
-                supermarket.phone,
-                supermarket.website,
-                supermarket.image || null
+                vendor.regCode,
+                vendor.name,
+                vendor.logo,
+                vendor.vatCert,
+                vendor.businessLicense,
+                vendor.tin,
+                vendor.email,
+                vendor.phone,
+                vendor.website,
+                vendor.image || null,
+                (vendor.businessType || 'supermarket').toLowerCase()
             ]
         );
 
-        const supermarketId = supermarket.regCode;
+        const vendorId = vendor.regCode;
 
 
 
@@ -131,9 +132,9 @@ router.post('/register', upload.fields([
                 const newBranchId = generateId('BZWB');
 
                 await query(
-                    `INSERT INTO branches (id, supermarket_id, name, address, map_pin, phone, is_busy)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-                    [newBranchId, supermarketId, branch.name, branch.address, branch.coordinates, branch.phone, branch.isBusy]
+                    `INSERT INTO branches (id, vendor_id, name, address, map_pin, phone, is_busy, opening_hours, closing_hours)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+                    [newBranchId, vendorId, branch.name, branch.address, branch.coordinates, branch.phone, branch.isBusy, branch.openingHours || null, branch.closingHours || null]
                 );
 
                 branchIdMap.set(branch.id, newBranchId);
@@ -172,8 +173,8 @@ router.post('/register', upload.fields([
 
         // Send Emails
         try {
-            console.log(`Sending Welcome Email to Supermarket: ${supermarket.email}`);
-            await sendSupermarketId(supermarket.email, supermarket.name, supermarketId);
+            console.log(`Sending Welcome Email to Vendor: ${vendor.email}`);
+            await sendStoreId(vendor.email, vendor.name, vendorId);
 
             if (managersToEmail.length > 0) {
                 console.log(`Sending emails to ${managersToEmail.length} managers...`);
@@ -186,7 +187,7 @@ router.post('/register', upload.fields([
             // We do not fail the request if email fails, but we log it.
         }
 
-        res.status(201).json({ message: 'Registration successful', partnerId: supermarketId });
+        res.status(201).json({ message: 'Registration successful', partnerId: vendorId });
 
     } catch (err) {
         await query('ROLLBACK');
@@ -200,20 +201,20 @@ router.post('/register', upload.fields([
 router.post('/login', async (req, res) => {
     const { regCode } = req.body;
     try {
-        const result = await query('SELECT * FROM supermarkets WHERE id = $1', [regCode]);
+        const result = await query('SELECT * FROM vendors WHERE id = $1', [regCode]);
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Invalid Store ID Code' });
         }
 
-        const supermarket = result.rows[0];
+        const vendor = result.rows[0];
         // Generate JWT Token
         const token = jwt.sign(
-            { id: supermarket.id, name: supermarket.name },
+            { id: vendor.id, name: vendor.name },
             JWT_SECRET,
             { expiresIn: '24h' }
         );
 
-        res.json({ success: true, token, supermarket });
+        res.json({ success: true, token, vendor });
     } catch (err) {
         console.error('Login error:', err);
         res.status(500).json({ error: 'Login failed' });
@@ -230,7 +231,7 @@ router.get('/:supermarketId/branches', authenticateToken, async (req, res) => {
     }
 
     try {
-        const result = await query('SELECT * FROM branches WHERE supermarket_id = $1', [supermarketId]);
+        const result = await query('SELECT * FROM branches WHERE vendor_id = $1', [supermarketId]);
         // Map database fields to frontend structure if necessary (e.g., map_pin -> coordinates)
         const branches = result.rows.map(b => ({
             id: b.id,
@@ -238,7 +239,9 @@ router.get('/:supermarketId/branches', authenticateToken, async (req, res) => {
             address: b.address,
             coordinates: b.map_pin,
             phone: b.phone,
-            isBusy: b.is_busy
+            isBusy: b.is_busy,
+            openingHours: b.opening_hours,
+            closingHours: b.closing_hours
         }));
         res.json(branches);
     } catch (err) {
@@ -250,7 +253,7 @@ router.get('/:supermarketId/branches', authenticateToken, async (req, res) => {
 // Add a Single Branch (Protected)
 router.post('/:supermarketId/branches', authenticateToken, async (req, res) => {
     const { supermarketId } = req.params;
-    const { name, address, coordinates, phone } = req.body;
+    const { name, address, coordinates, phone, openingHours, closingHours } = req.body;
 
     // Security check
     if (req.user.id !== supermarketId) {
@@ -265,9 +268,9 @@ router.post('/:supermarketId/branches', authenticateToken, async (req, res) => {
         const newBranchId = generateId('BZWB');
 
         await query(
-            `INSERT INTO branches (id, supermarket_id, name, address, map_pin, phone, is_busy)
-             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-            [newBranchId, supermarketId, name, address, coordinates || '', phone || '', false]
+            `INSERT INTO branches (id, vendor_id, name, address, map_pin, phone, is_busy, opening_hours, closing_hours)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+            [newBranchId, supermarketId, name, address, coordinates || '', phone || '', false, openingHours || null, closingHours || null]
         );
 
         res.status(201).json({ success: true, message: 'Branch added successfully', branchId: newBranchId });
@@ -313,7 +316,7 @@ router.get('/branches/:branchId/managers', authenticateToken, async (req, res) =
 
     try {
         // verify branch ownership
-        const branchCheck = await query('SELECT 1 FROM branches WHERE id = $1 AND supermarket_id = $2', [branchId, supermarketId]);
+        const branchCheck = await query('SELECT 1 FROM branches WHERE id = $1 AND vendor_id = $2', [branchId, supermarketId]);
         if (branchCheck.rows.length === 0) {
             return res.status(403).json({ error: 'Unauthorized access to this branch' });
         }
@@ -343,7 +346,7 @@ router.delete('/managers/:managerId', authenticateToken, async (req, res) => {
         const ownershipCheck = await query(
             `SELECT 1 FROM managers m 
              JOIN branches b ON m.branch_id = b.id 
-             WHERE m.id = $1 AND b.supermarket_id = $2`,
+             WHERE m.id = $1 AND b.vendor_id = $2`,
             [managerId, supermarketId]
         );
 

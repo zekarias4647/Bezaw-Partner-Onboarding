@@ -10,7 +10,7 @@ import {
   Moon,
   ArrowLeft
 } from 'lucide-react';
-import { SupermarketData, BranchData, ManagerData, Step, ViewState } from './types';
+import { VendorData, BranchData, ManagerData, Step, ViewState } from './types';
 import BusinessInfo from './components/BusinessInfo';
 import BranchSetup from './components/BranchSetup';
 import ManagerSetup from './components/ManagerSetup';
@@ -33,7 +33,7 @@ const App: React.FC = () => {
     return 'light';
   });
 
-  const [supermarket, setSupermarket] = useState<SupermarketData>({
+  const [vendor, setVendor] = useState<VendorData>({
     name: '',
     logo: '',
     vatCert: '',
@@ -43,7 +43,8 @@ const App: React.FC = () => {
     phone: '',
     website: '',
 
-    regCode: ''
+    regCode: '',
+    businessType: 'supermarket'
   });
 
   // Start with no branches
@@ -56,10 +57,10 @@ const App: React.FC = () => {
   const handleBranchAdded = async () => {
     setShowAddBranchModal(false);
     // Refresh branches list
-    if (supermarket.regCode) {
+    if (vendor.regCode) {
       try {
         const token = localStorage.getItem('authToken');
-        const res = await fetch(`https://onboardingapi.ristestate.com/api/onboard/${supermarket.regCode}/branches`, {
+        const res = await fetch(`http://localhost:5002/api/onboard/${vendor.regCode}/branches`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -100,7 +101,7 @@ const App: React.FC = () => {
   };
 
   const resetForm = () => {
-    setSupermarket({
+    setVendor({
       name: '',
       logo: '',
       vatCert: '',
@@ -110,7 +111,8 @@ const App: React.FC = () => {
       phone: '',
       website: '',
 
-      regCode: ''
+      regCode: '',
+      businessType: 'supermarket'
     });
     setBranches([]);
     setManagers([]);
@@ -151,7 +153,7 @@ const App: React.FC = () => {
 
       <div className="min-h-[400px]">
         {currentStep === Step.BUSINESS_INFO && (
-          <BusinessInfo data={supermarket} onChange={setSupermarket} onNext={handleNext} />
+          <BusinessInfo data={vendor} onChange={setVendor} onNext={handleNext} />
         )}
         {currentStep === Step.BRANCHES && (
           <BranchSetup
@@ -172,7 +174,7 @@ const App: React.FC = () => {
         )}
         {currentStep === Step.SUMMARY && (
           <Summary
-            supermarket={supermarket}
+            vendor={vendor}
             branches={branches}
             managers={managers}
             onBack={handleBack}
@@ -218,7 +220,7 @@ const App: React.FC = () => {
               localStorage.setItem('authToken', token);
 
               // Map DB snake_case to frontend camelCase
-              const mappedSupermarket: SupermarketData = {
+              const mappedVendor: VendorData = {
                 regCode: data.id,
                 name: data.name,
                 logo: data.logo,
@@ -228,12 +230,13 @@ const App: React.FC = () => {
                 email: data.email,
                 phone: data.phone,
                 website: data.website,
+                businessType: (data.business_type || 'supermarket').toLowerCase()
 
               };
-              setSupermarket(mappedSupermarket);
+              setVendor(mappedVendor);
 
               try {
-                const res = await fetch(`https://onboardingapi.ristestate.com/api/onboard/${data.id}/branches`, {
+                const res = await fetch(`http://localhost:5002/api/onboard/${data.id}/branches`, {
                   headers: {
                     'Authorization': `Bearer ${token}`
                   }
@@ -269,7 +272,7 @@ const App: React.FC = () => {
             />
             {showAddBranchModal && (
               <SingleBranchForm
-                supermarketId={supermarket.regCode}
+                vendorId={vendor.regCode}
                 onSuccess={handleBranchAdded}
                 onCancel={() => setShowAddBranchModal(false)}
               />

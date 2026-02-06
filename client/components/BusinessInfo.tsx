@@ -1,10 +1,10 @@
 import React from 'react';
-import { SupermarketData } from '../types';
+import { VendorData } from '../types';
 import { Building, Hash, Phone, ChevronRight, Upload, FileText, Fingerprint, RefreshCw, Globe, Mail } from 'lucide-react';
 
 interface Props {
-  data: SupermarketData;
-  onChange: (data: SupermarketData) => void;
+  data: VendorData;
+  onChange: (data: VendorData) => void;
   onNext: () => void;
 }
 
@@ -14,13 +14,12 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
   };
 
   const generateRegCode = () => {
-    // Generate a random 6-digit number between 100000 and 999999
     const randomDigits = Math.floor(100000 + Math.random() * 900000).toString();
-    const code = `BZWS-${randomDigits}`;
+    const code = `BZWV-${randomDigits}`;
     onChange({ ...data, regCode: code });
   };
 
-  const handleFileUpload = (field: keyof SupermarketData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (field: keyof VendorData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -82,6 +81,24 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
                 placeholder="Legal Store Name"
                 className={inputStyles}
               />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1">Business Type</label>
+              <select
+                name="businessType"
+                value={data.businessType}
+                onChange={handleChange}
+                className={inputStyles}
+              >
+                <option value="supermarket">SUPERMARKET</option>
+                <option value="restaurant">RESTAURANT</option>
+                <option value="liquor">LIQUOR</option>
+                <option value="bakery">BAKERY</option>
+                <option value="cafe">CAFE</option>
+                <option value="pharmacy">PHARMACY</option>
+                <option value="other">OTHER</option>
+              </select>
             </div>
 
             <div>
