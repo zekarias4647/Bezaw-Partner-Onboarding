@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { VendorData } from '../types';
 import { Building, Hash, Phone, ChevronRight, Upload, FileText, Fingerprint, RefreshCw, Globe, Mail } from 'lucide-react';
 
@@ -8,7 +8,41 @@ interface Props {
   onNext: () => void;
 }
 
+interface BusinessType {
+  id: string;
+  name: string;
+  description: string;
+}
+
 const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
+  const [businessTypes, setBusinessTypes] = useState<BusinessType[]>([]);
+
+  useEffect(() => {
+    const fetchBusinessTypes = async () => {
+      try {
+        const response = await fetch('http://localhost:5002/api/onboard/business-types');
+        if (response.ok) {
+          const fetchedTypes = await response.json();
+          setBusinessTypes(fetchedTypes);
+        }
+      } catch (error) {
+        console.error('Error fetching business types:', error);
+      }
+    };
+    fetchBusinessTypes();
+  }, []);
+
+  useEffect(() => {
+    if (businessTypes.length > 0) {
+      const current = data.businessType?.toLowerCase();
+      const exists = businessTypes.some(t => t.name.toLowerCase() === current);
+
+      if (!current || !exists) {
+        onChange({ ...data, businessType: businessTypes[0].name.toLowerCase() });
+      }
+    }
+  }, [businessTypes, data.businessType]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     onChange({ ...data, [e.target.name]: e.target.value });
   };
@@ -91,13 +125,12 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
                 onChange={handleChange}
                 className={inputStyles}
               >
-                <option value="supermarket">SUPERMARKET</option>
-                <option value="restaurant">RESTAURANT</option>
-                <option value="liquor">LIQUOR</option>
-                <option value="bakery">BAKERY</option>
-                <option value="cafe">CAFE</option>
-                <option value="pharmacy">PHARMACY</option>
-                <option value="other">OTHER</option>
+                {businessTypes.length === 0 && <option value="supermarket">Loading...</option>}
+                {businessTypes.map((type) => (
+                  <option key={type.id} value={type.name.toLowerCase()}>
+                    {type.name.toUpperCase()}
+                  </option>
+                ))}
               </select>
             </div>
 

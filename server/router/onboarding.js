@@ -63,6 +63,17 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+// -------------------- Business Types API --------------------
+router.get('/business-types', async (req, res) => {
+    try {
+        const result = await query('SELECT * FROM business_types ORDER BY name ASC');
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching business types:', err);
+        res.status(500).json({ error: 'Failed to fetch business types' });
+    }
+});
+
 // -------------------- Registration API --------------------
 router.post('/register', upload.fields([
     { name: 'logo', maxCount: 1 },

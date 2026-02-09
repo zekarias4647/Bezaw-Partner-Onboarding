@@ -44,7 +44,7 @@ const App: React.FC = () => {
     website: '',
 
     regCode: '',
-    businessType: 'supermarket'
+    businessType: ''
   });
 
   // Start with no branches
