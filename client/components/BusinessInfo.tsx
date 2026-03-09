@@ -16,6 +16,7 @@ interface BusinessType {
 
 const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
   const [businessTypes, setBusinessTypes] = useState<BusinessType[]>([]);
+  const [showErrors, setShowErrors] = useState(false);
 
   useEffect(() => {
     const fetchBusinessTypes = async () => {
@@ -68,38 +69,64 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
     }
   };
 
-  const inputStyles = "w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white text-black focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all text-sm";
+  const handleNext = () => {
+    const missing: string[] = [];
+    if (!data.regCode) missing.push('Store ID Code');
+    if (!data.name.trim()) missing.push('Supermarket Name');
+    if (!data.businessType) missing.push('Business Type');
+    if (!data.email?.trim()) missing.push('Email Address');
+    if (!data.tin.trim()) missing.push('Business TIN');
+    if (!data.phone.trim()) missing.push('Phone Number');
+    if (!data.logo) missing.push('Logo');
+    if (!data.businessLicense) missing.push('Business License');
+
+    if (missing.length > 0) {
+      setShowErrors(true);
+      return;
+    }
+    onNext();
+  };
+
+  const getErrorStyle = (field: keyof VendorData) => {
+    if (!showErrors) return "";
+    const val = data[field];
+    const isMissing = typeof val === 'string' ? !val.trim() : !val;
+    return isMissing ? "border-red-500 ring-2 ring-red-500/10 focus:border-red-500" : "";
+  };
+
+  const inputStyles = "w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all text-[11px] font-medium";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2">
       <div>
-        <h2 className="text-2xl font-black text-slate-900 dark:text-white">Business Registration</h2>
-        <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">Create your unique supermarket identity on our platform.</p>
+        <h2 className="text-base font-bold text-slate-900 dark:text-white">Business Registration</h2>
+        <p className="text-slate-500 dark:text-slate-400 mt-0.5 text-[10px]">Create your unique supermarket identity on our platform.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* Basic Information */}
-        <section className="space-y-4">
-          <h3 className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
-            <Building size={14} /> Core Identity
+        <section className="space-y-2">
+          <h3 className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] flex items-center gap-2">
+            <Building size={12} /> Core Identity
           </h3>
 
-          <div className="space-y-3">
+          <div className="space-y-1.5">
             <div>
-              <label className="block text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1">Store ID Code</label>
+              <label className="block text-[8px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-0.5">Store ID Code</label>
               <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Fingerprint className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                <div className="relative flex-1 group">
+                  <Fingerprint className="absolute left-3 top-1/2 -translate-y-1/2 text-emerald-500 dark:text-emerald-400 group-hover:scale-110 transition-transform" size={14} />
                   <input
                     name="regCode"
                     value={data.regCode}
                     readOnly
-                    className={`${inputStyles} pl-9 font-mono tracking-widest bg-slate-50 dark:bg-slate-50`}
+                    className={`${inputStyles} pl-8 font-mono tracking-wider bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:!text-white border-emerald-100 dark:border-emerald-900/50 ${getErrorStyle('regCode')}`}
+                    placeholder="Click Generate..."
                   />
                 </div>
                 <button
                   onClick={generateRegCode}
-                  className="px-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-1 font-bold text-xs"
+                  className="px-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-1 font-bold text-[10px]"
                 >
                   <RefreshCw size={14} /> GENERATE
                 </button>
@@ -107,23 +134,23 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1">Supermarket Name</label>
+              <label className="block text-[8px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-0.5">Supermarket Name</label>
               <input
                 name="name"
                 value={data.name}
                 onChange={handleChange}
-                placeholder="Legal Store Name"
-                className={inputStyles}
+                className={`${inputStyles} ${getErrorStyle('name')}`}
+                placeholder="e.g. Bezaw Supermarket Bole"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1">Business Type</label>
+              <label className="block text-[8px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-0.5">Business Type</label>
               <select
                 name="businessType"
                 value={data.businessType}
                 onChange={handleChange}
-                className={inputStyles}
+                className={`${inputStyles} ${getErrorStyle('businessType')}`}
               >
                 {businessTypes.length === 0 && <option value="supermarket">Loading...</option>}
                 {businessTypes.map((type) => (
@@ -135,65 +162,65 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1">Website</label>
+              <label className="block text-[8px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-0.5">Website</label>
               <div className="relative">
-                <Globe className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
                 <input
                   name="website"
                   value={data.website || ''}
                   onChange={handleChange}
                   placeholder="www.example.com"
-                  className={`${inputStyles} pl-9`}
+                  className={`${inputStyles} pl-8`}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1">Email Address</label>
+              <label className="block text-[8px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-0.5">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
                 <input
                   name="email"
-                  value={data.email || ''}
-                  onChange={handleChange}
-                  placeholder="contact@example.com"
                   type="email"
-                  className={`${inputStyles} pl-9`}
+                  value={data.email}
+                  onChange={handleChange}
+                  className={`${inputStyles} pl-8 ${getErrorStyle('email')}`}
+                  placeholder="billing@supermarket.com"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1">Business TIN</label>
+                <label className="block text-[8px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-0.5">Business TIN</label>
                 <div className="relative">
-                  <Hash className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
                   <input
                     name="tin"
                     value={data.tin}
                     onChange={handleChange}
-                    placeholder="0001234567"
-                    className={`${inputStyles} pl-9`}
+                    className={`${inputStyles} pl-8 ${getErrorStyle('tin')}`}
+                    placeholder="0012345678"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1">Phone Number</label>
+                <label className="block text-[8px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-0.5">Phone Number</label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
                   <input
                     name="phone"
                     value={data.phone}
                     onChange={handleChange}
                     placeholder="+251..."
-                    className={`${inputStyles} pl-9`}
+                    className={`${inputStyles} pl-8`}
                   />
                 </div>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest">Document Uploads</label>
+            <div className="space-y-1.5">
+              <label className="block text-[8px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest">Document Uploads</label>
               <div className="grid grid-cols-4 gap-2">
                 {/* VAT Upload */}
                 <input type="file" id="vatCert" className="hidden" onChange={handleFileUpload('vatCert')} accept="image/*" />
@@ -202,8 +229,8 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
                     <img src={data.vatCert} className="w-full h-full object-cover rounded" />
                   ) : (
                     <>
-                      <Upload size={16} className="text-slate-300 mb-1" />
-                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">VAT Cert</span>
+                      <Upload size={14} className="text-slate-300 mb-0.5" />
+                      <span className="text-[7px] font-bold text-slate-400 uppercase tracking-tighter">VAT Cert</span>
                     </>
                   )}
                 </label>
@@ -215,8 +242,8 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
                     <img src={data.businessLicense} className="w-full h-full object-cover rounded" />
                   ) : (
                     <>
-                      <FileText size={16} className="text-slate-300 mb-1" />
-                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">License</span>
+                      <FileText size={14} className="text-slate-300 mb-0.5" />
+                      <span className="text-[7px] font-bold text-slate-400 uppercase tracking-tighter">License</span>
                     </>
                   )}
                 </label>
@@ -228,8 +255,8 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
                     <img src={data.logo} className="w-full h-full object-cover rounded" />
                   ) : (
                     <>
-                      <Building size={16} className="text-slate-300 mb-1" />
-                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Logo</span>
+                      <Building size={14} className="text-slate-300 mb-0.5" />
+                      <span className="text-[7px] font-bold text-slate-400 uppercase tracking-tighter">Logo</span>
                     </>
                   )}
                 </label>
@@ -241,8 +268,8 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
                     <img src={data.image} className="w-full h-full object-cover rounded" />
                   ) : (
                     <>
-                      <Building size={16} className="text-slate-300 mb-1" />
-                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Storefront</span>
+                      <Building size={14} className="text-slate-300 mb-0.5" />
+                      <span className="text-[7px] font-bold text-slate-400 uppercase tracking-tighter">Storefront</span>
                     </>
                   )}
                 </label>
@@ -252,13 +279,19 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
         </section>
       </div>
 
-      <div className="pt-4 border-t dark:border-slate-800 flex justify-end">
+      <div className="pt-3 border-t dark:border-slate-800 flex items-center justify-between">
+        {showErrors && (
+          <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest flex items-center gap-1">
+            <Fingerprint size={12} /> Missing required information
+          </p>
+        )}
+        <div className="flex-1" />
         <button
-          onClick={onNext}
-          disabled={!data.name || !data.regCode}
-          className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 dark:disabled:bg-slate-800 text-white font-black rounded-lg shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2 text-sm"
+          onClick={handleNext}
+          disabled={false}
+          className="px-5 py-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 dark:disabled:bg-slate-800 text-white font-bold rounded-lg shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2 text-[10px] uppercase tracking-widest"
         >
-          Branch Configuration <ChevronRight size={16} />
+          Branch Configuration <ChevronRight size={14} />
         </button>
       </div>
     </div>

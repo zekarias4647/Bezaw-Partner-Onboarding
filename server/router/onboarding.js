@@ -75,7 +75,7 @@ router.get('/business-types', async (req, res) => {
 });
 
 // -------------------- Registration API --------------------
-router.post('/register', upload.fields([
+router.post('/register', authenticateToken, upload.fields([
     { name: 'logo', maxCount: 1 },
     { name: 'vatCert', maxCount: 1 },
     { name: 'businessLicense', maxCount: 1 },
@@ -108,6 +108,12 @@ router.post('/register', upload.fields([
             if (req.files['image']) {
                 vendor.image = `uploads/${req.files['image'][0].originalname}`;
             }
+        }
+
+        // Check if TIN already exists
+        const tinCheck = await query('SELECT id FROM vendors WHERE tin = $1', [vendor.tin]);
+        if (tinCheck.rows.length > 0) {
+            return res.status(400).json({ error: 'This Business TIN is already registered.' });
         }
 
         // Start DB transaction
@@ -203,6 +209,11 @@ router.post('/register', upload.fields([
     } catch (err) {
         await query('ROLLBACK');
         console.error('Registration error:', err);
+
+        if (err.code === '23505') {
+            return res.status(400).json({ error: 'Duplicate entry detected: One of the unique identifiers (TIN, Store ID, or Email) is already in use.' });
+        }
+
         res.status(500).json({ error: 'Registration failed. Please try again later.' });
     }
 });

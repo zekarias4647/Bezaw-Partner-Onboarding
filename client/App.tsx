@@ -8,7 +8,8 @@ import {
   LayoutDashboard,
   Sun,
   Moon,
-  ArrowLeft
+  ArrowLeft,
+  Settings
 } from 'lucide-react';
 import { VendorData, BranchData, ManagerData, Step, ViewState } from './types';
 import BusinessInfo from './components/BusinessInfo';
@@ -20,6 +21,7 @@ import BranchLogin from './components/BranchLogin';
 import SelectBranch from './components/SelectBranch';
 import BranchDashboard from './components/BranchDashboard';
 import SingleBranchForm from './components/SingleBranchForm';
+import VendorSettings from './components/VendorSettings';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('LANDING');
@@ -53,6 +55,7 @@ const App: React.FC = () => {
   const [managers, setManagers] = useState<ManagerData[]>([]);
   const [selectedBranch, setSelectedBranch] = useState<BranchData | null>(null);
   const [showAddBranchModal, setShowAddBranchModal] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   const handleBranchAdded = async () => {
     setShowAddBranchModal(false);
@@ -127,8 +130,8 @@ const App: React.FC = () => {
   ];
 
   const renderWizard = () => (
-    <div className="glass dark:bg-slate-900/50 dark:border-slate-800 rounded-3xl shadow-xl p-8 transition-all duration-500">
-      <div className="mb-8 flex items-center justify-between">
+    <div className="glass dark:bg-slate-900/50 dark:border-slate-800 rounded-xl shadow-xl p-4 transition-all duration-500">
+      <div className="mb-4 flex items-center justify-between">
         <button
           onClick={resetToLanding}
           className="flex items-center gap-2 text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 transition-colors font-bold text-xs uppercase tracking-widest"
@@ -151,7 +154,7 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <div className="min-h-[400px]">
+      <div className="min-h-[300px]">
         {currentStep === Step.BUSINESS_INFO && (
           <BusinessInfo data={vendor} onChange={setVendor} onNext={handleNext} />
         )}
@@ -190,27 +193,42 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-500 flex flex-col selection:bg-emerald-500/30">
-      <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b dark:border-slate-800 sticky top-0 z-30 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3 cursor-pointer group" onClick={resetToLanding}>
-          <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
-            <LayoutDashboard size={24} />
+      <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b dark:border-slate-800 sticky top-0 z-30 px-3 py-2 flex items-center justify-between">
+        <div className="flex items-center gap-2 cursor-pointer group" onClick={resetToLanding}>
+          <div className="w-7 h-7 bg-emerald-600 rounded-lg flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
+            <LayoutDashboard size={16} />
           </div>
           <div>
-            <h1 className="text-xl font-black text-slate-900 dark:text-white leading-tight">Bezaw Partner</h1>
-            <p className="text-[10px] text-slate-500 dark:text-slate-500 font-black tracking-widest uppercase">Drive-Through Network</p>
+            <h1 className="text-sm font-bold text-slate-900 dark:text-white leading-tight">
+              {vendor.name && (view === 'SELECT_BRANCH' || view === 'BRANCH_DASHBOARD') ? vendor.name : 'Bezaw Partner'}
+            </h1>
+            <p className="text-[9px] text-slate-500 dark:text-slate-500 font-bold tracking-widest uppercase">
+              {vendor.name && (view === 'SELECT_BRANCH' || view === 'BRANCH_DASHBOARD') ? 'Authorized Partner Portal' : 'Drive-Through Network'}
+            </p>
           </div>
         </div>
 
-        <button
-          onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-          className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-transparent dark:border-slate-700"
-          title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
-        >
-          {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-        </button>
+        <div className="flex items-center gap-3">
+          {(view === 'SELECT_BRANCH' || view === 'BRANCH_DASHBOARD') && (
+            <button
+              onClick={() => setShowSettings(true)}
+              className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-transparent dark:border-slate-700"
+              title="Business Settings"
+            >
+              <Settings size={14} />
+            </button>
+          )}
+          <button
+            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-transparent dark:border-slate-700"
+            title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+          >
+            {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+          </button>
+        </div>
       </header>
 
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-12 flex flex-col">
+      <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-2 flex flex-col">
         {view === 'LANDING' && <Landing onSelectRegister={() => setView('REGISTER')} onSelectLogin={() => setView('BRANCH_LOGIN')} />}
 
         {view === 'BRANCH_LOGIN' && (
@@ -262,6 +280,7 @@ const App: React.FC = () => {
         {view === 'SELECT_BRANCH' && (
           <>
             <SelectBranch
+              vendor={vendor}
               branches={branches}
               onSelect={(branch) => {
                 setSelectedBranch(branch);
@@ -283,6 +302,7 @@ const App: React.FC = () => {
         {view === 'BRANCH_DASHBOARD' && selectedBranch && (
           <BranchDashboard
             branch={selectedBranch}
+            vendorName={vendor.name}
             onBack={() => setView('SELECT_BRANCH')}
           />
         )}
@@ -290,15 +310,23 @@ const App: React.FC = () => {
         {view === 'REGISTER' && renderWizard()}
       </main>
 
-      <footer className="py-8 text-center">
-        <div className="flex items-center justify-center gap-2 mb-2 text-emerald-600 dark:text-emerald-500 font-black tracking-widest text-[10px] uppercase">
-          <div className="h-px w-8 bg-slate-200 dark:bg-slate-800" />
+      {showSettings && (
+        <VendorSettings
+          vendor={vendor}
+          onUpdate={(updated) => {
+            setVendor(updated);
+          }}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
+
+      <footer className="py-2.5 text-center">
+        <div className="flex items-center justify-center gap-2 mb-2 text-emerald-600 dark:text-emerald-500 font-bold tracking-widest text-[9px] uppercase">
+          <div className="h-px w-6 bg-slate-200 dark:bg-slate-800" />
           Bezaw Ecosystem
-          <div className="h-px w-8 bg-slate-200 dark:bg-slate-800" />
+          <div className="h-px w-6 bg-slate-200 dark:bg-slate-800" />
         </div>
-        <p className="text-[10px] font-bold text-slate-400 dark:text-slate-700 uppercase tracking-[0.3em]">
-          &copy; 2025 BEZAW TECH &middot; ADDIS ABABA, ETHIOPIA
-        </p>
+
       </footer>
     </div>
   );

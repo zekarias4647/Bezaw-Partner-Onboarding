@@ -77,20 +77,20 @@ const Summary: React.FC<Props> = ({ vendor, branches, managers, onBack, onComple
 
   if (submitted) {
     return (
-      <div className="py-20 flex flex-col items-center justify-center text-center space-y-8 animate-fadeIn">
-        <div className="w-32 h-32 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center animate-bounce shadow-2xl shadow-emerald-500/20">
-          <CheckCircle size={80} />
+      <div className="py-8 flex flex-col items-center justify-center text-center space-y-4 animate-fadeIn">
+        <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center animate-bounce shadow-2xl shadow-emerald-500/20">
+          <CheckCircle size={40} />
         </div>
-        <div className="space-y-4">
-          <h2 className="text-5xl font-black text-slate-900 dark:text-white">Registration Finalized.</h2>
-          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-md mx-auto font-medium">
-            Welcome to Bezaw, <span className="text-emerald-600 font-black">{successDetails.name}</span>.
+        <div className="space-y-3">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Registration Finalized.</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto font-medium">
+            Welcome to Bezaw, <span className="text-emerald-600 font-bold">{successDetails.name}</span>.
             Your Store ID <span className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded font-mono text-black dark:text-emerald-400">{successDetails.regCode}</span> is now active.
           </p>
         </div>
         <button
           onClick={onComplete}
-          className="px-12 py-5 bg-emerald-600 text-white font-black rounded-[2rem] shadow-2xl shadow-emerald-500/40 hover:scale-105 transition-transform"
+          className="px-6 py-2 bg-emerald-600 text-white font-bold rounded-xl shadow-2xl shadow-emerald-500/40 hover:scale-105 transition-transform text-xs uppercase tracking-widest"
         >
           LAUNCH PARTNER DASHBOARD
         </button>
@@ -99,49 +99,57 @@ const Summary: React.FC<Props> = ({ vendor, branches, managers, onBack, onComple
   }
 
   return (
-    <div className="space-y-10 animate-fadeIn">
-      <div className="text-center space-y-2">
-        <h2 className="text-4xl font-black text-slate-900 dark:text-white">Final Review</h2>
-        <p className="text-slate-500 dark:text-slate-400 font-medium">One last check before your network goes live.</p>
+    <div className="space-y-2.5 animate-fadeIn">
+      <div className="text-center space-y-0.5">
+        <h2 className="text-lg font-bold text-slate-900 dark:text-white">Final Review</h2>
+        <p className="text-slate-500 dark:text-slate-400 text-[10px] font-medium">One last check before your network goes live.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* Profile Card */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 space-y-6 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 space-y-2.5 shadow-sm">
           <div className="flex items-center justify-between">
-            <h3 className="font-black text-slate-900 dark:text-white flex items-center gap-2 uppercase tracking-widest text-xs">
-              <Building2 size={18} className="text-emerald-500" /> Vendor Profile
+            <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2 uppercase tracking-widest text-[8px]">
+              <Building2 size={14} className="text-emerald-500" /> Vendor Profile
             </h3>
-            {vendor.logo && <img src={vendor.logo} className="w-12 h-12 object-cover rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800" />}
+            {vendor.logo && (
+              <img
+                src={vendor.logo.startsWith('http') || vendor.logo.startsWith('data:')
+                  ? vendor.logo
+                  : `http://localhost:5002${vendor.logo.startsWith('/') ? '' : '/'}${vendor.logo}`
+                }
+                className="w-10 h-10 object-cover rounded-xl shadow-lg border border-slate-100 dark:border-slate-800"
+              />
+            )}
           </div>
 
-          <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl flex items-center justify-between border border-slate-100 dark:border-slate-700">
-            <div className="flex items-center gap-3">
-              <Fingerprint className="text-emerald-600" size={20} />
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg flex items-center justify-between border border-slate-100 dark:border-slate-700">
+            <div className="flex items-center gap-2.5">
+              <Fingerprint className="text-emerald-600" size={16} />
               <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Master ID Code</p>
-                <p className="font-mono text-black dark:text-emerald-400 font-bold">{vendor.regCode}</p>
+                <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Master ID Code</p>
+                <p className="font-mono text-xs text-black dark:text-emerald-400 font-bold">{vendor.regCode}</p>
               </div>
             </div>
-            <FileCheck size={20} className="text-emerald-500" />
+            <FileCheck size={16} className="text-emerald-500" />
           </div>
 
-          <div className="grid grid-cols-2 gap-6 text-sm">
+          <div className="grid grid-cols-2 gap-3 text-xs">
             <div>
-              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Brand Name</p>
-              <p className="text-black dark:text-white font-bold">{vendor.name}</p>
+              <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Brand Name</p>
+              <p className="text-black dark:text-white font-bold text-[11px]">{vendor.name}</p>
             </div>
             <div>
-              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1">Tax Ident. (TIN)</p>
-              <p className="text-black dark:text-white font-bold">{vendor.tin}</p>
+              <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Tax Ident. (TIN)</p>
+              <p className="text-black dark:text-white font-bold text-[11px]">{vendor.tin}</p>
             </div>
           </div>
 
-          <div className="flex gap-3">
-            <div className="flex-1 flex items-center justify-center gap-2 text-[10px] font-black uppercase p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl border border-blue-100 dark:border-blue-900/40">
+          <div className="flex gap-2">
+            <div className="flex-1 flex items-center justify-center gap-1.5 text-[8px] font-bold uppercase p-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg border border-blue-100 dark:border-blue-900/40">
               VAT CERTIFIED
             </div>
-            <div className="flex-1 flex items-center justify-center gap-2 text-[10px] font-black uppercase p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl border border-blue-100 dark:border-blue-900/40">
+            <div className="flex-1 flex items-center justify-center gap-1.5 text-[8px] font-bold uppercase p-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg border border-blue-100 dark:border-blue-900/40">
               LICENSE VERIFIED
             </div>
           </div>
@@ -150,74 +158,74 @@ const Summary: React.FC<Props> = ({ vendor, branches, managers, onBack, onComple
 
 
         {/* Network & Team Combined */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="space-y-4">
-            <h3 className="font-black text-slate-900 dark:text-white flex items-center gap-2 uppercase tracking-widest text-xs">
-              <Store size={18} className="text-amber-500" /> Operational Network
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2 uppercase tracking-widest text-[8px]">
+              <Store size={14} className="text-amber-500" /> Operational Network
             </h3>
             <div className="flex items-baseline gap-2">
-              <span className="text-6xl font-black text-black dark:text-white">{branches.length}</span>
-              <span className="text-sm font-black text-slate-400 uppercase tracking-widest">Branches Mapped</span>
+              <span className="text-2xl font-bold text-black dark:text-white">{branches.length}</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Branches Mapped</span>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {branches.map(b => (
-                <span key={b.id} className="text-[9px] font-black px-3 py-1.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-lg border border-amber-100 dark:border-amber-900/40 uppercase">
+                <span key={b.id} className="text-[8px] font-bold px-2 py-1 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-md border border-amber-100 dark:border-amber-900/40 uppercase">
                   {b.name}
                 </span>
               ))}
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h3 className="font-black text-slate-900 dark:text-white flex items-center gap-2 uppercase tracking-widest text-xs">
-              <Users size={18} className="text-indigo-500" /> Human Capital
+          <div className="space-y-1.5">
+            <h3 className="font-bold text-slate-900 dark:text-white flex items-center gap-2 uppercase tracking-widest text-[8px]">
+              <Users size={14} className="text-indigo-500" /> Human Capital
             </h3>
             <div className="flex items-baseline gap-2">
-              <span className="text-6xl font-black text-black dark:text-white">{managers.length}</span>
-              <span className="text-sm font-black text-slate-400 uppercase tracking-widest">Managers Hired</span>
+              <span className="text-2xl font-bold text-black dark:text-white">{managers.length}</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Managers Hired</span>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {managers.slice(0, 3).map(m => (
-                <p key={m.id} className="text-xs text-slate-600 dark:text-slate-400 font-medium">• {m.name}</p>
+                <p key={m.id} className="text-[10px] text-slate-600 dark:text-slate-400 font-medium">• {m.name}</p>
               ))}
-              {managers.length > 3 && <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-black">+ {managers.length - 3} MORE ASSIGNED</p>}
+              {managers.length > 3 && <p className="text-[8px] text-emerald-600 dark:text-emerald-400 font-bold">+ {managers.length - 3} MORE ASSIGNED</p>}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-emerald-950 text-emerald-400 rounded-[2rem] p-8 flex items-center gap-6 shadow-2xl">
-        <div className="w-16 h-16 bg-emerald-900 rounded-2xl flex items-center justify-center flex-shrink-0 animate-pulse">
-          <Rocket size={32} />
+      <div className="bg-emerald-950 text-emerald-400 rounded-lg p-2.5 flex items-center gap-2.5 shadow-2xl">
+        <div className="w-8 h-8 bg-emerald-900 rounded-lg flex items-center justify-center flex-shrink-0 animate-pulse">
+          <Rocket size={14} />
         </div>
         <div>
-          <h4 className="font-black text-lg uppercase tracking-widest">Launch Protocol Ready</h4>
-          <p className="text-sm text-emerald-500/80 font-medium leading-relaxed">
-            By confirming registration, you authorize Bezaw to act as the primary drive-through facilitator for your network. Automated billing and fulfillment sync will start immediately.
+          <h4 className="font-bold text-xs uppercase tracking-widest">Launch Protocol Ready</h4>
+          <p className="text-[10px] text-emerald-500/80 font-medium leading-relaxed">
+            By confirming registration, you authorize Bezaw to act as the primary drive-through facilitator for your network.
           </p>
         </div>
       </div>
 
-      <div className="pt-8 border-t dark:border-slate-800 flex items-center justify-between">
+      <div className="pt-3 border-t dark:border-slate-800 flex items-center justify-between">
         <button
           onClick={onBack}
           disabled={isSubmitting}
-          className="flex items-center gap-2 px-6 py-4 text-slate-600 dark:text-slate-400 font-bold rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-900 transition-all disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 text-slate-600 dark:text-slate-400 font-bold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 transition-all disabled:opacity-50 text-[10px] uppercase tracking-widest"
         >
-          <ArrowLeft size={20} /> Back to Edit
+          <ArrowLeft size={14} /> Back
         </button>
         <button
           onClick={handleSubmit}
           disabled={isSubmitting}
-          className="px-14 py-5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-[2rem] shadow-2xl shadow-emerald-500/30 flex items-center gap-4 transition-all hover:scale-[1.02]"
+          className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-2xl shadow-emerald-500/30 flex items-center gap-2 transition-all hover:scale-[1.02] text-[10px] uppercase tracking-widest"
         >
           {isSubmitting ? (
-            <div className="flex items-center gap-3">
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              SYNCHRONIZING...
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              SENDING...
             </div>
           ) : (
-            <><Send size={24} /> PUSH TO PRODUCTION</>
+            <><Send size={14} /> PUSH TO PRODUCTION</>
           )}
         </button>
       </div>
