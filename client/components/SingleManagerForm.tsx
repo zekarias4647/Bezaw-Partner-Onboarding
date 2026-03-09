@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { ShieldCheck, UserPlus, Mail, Phone, Lock, ChevronRight, RefreshCw, X } from 'lucide-react';
+import { ShieldCheck, UserPlus, Mail, Phone, Lock, ChevronRight, RefreshCw, X, Sparkles } from 'lucide-react';
 
 interface Props {
     branchId: string;
@@ -53,55 +52,57 @@ const SingleManagerForm: React.FC<Props> = ({ branchId, branchName, onSuccess, o
         }
     };
 
-    const inputStyles = "w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all text-[11px] font-medium shadow-sm";
-
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fadeIn">
-            <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-xl p-4 shadow-2xl border border-slate-200 dark:border-slate-800">
-                <div className="flex items-center justify-between mb-4">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[100] flex items-center justify-center p-6 animate-fadeIn">
+            <div className="glass w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl border border-brand-emerald/20 relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-emerald to-transparent" />
+
+                <div className="flex items-center justify-between mb-8">
                     <div>
-                        <h2 className="text-base font-bold text-slate-900 dark:text-white">Add Personnel</h2>
-                        <p className="text-[9px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-0.5">
-                            To: <span className="text-emerald-600">{branchName}</span>
-                        </p>
+                        <h2 className="font-display font-black text-2xl tracking-tighter text-inherit mb-1">Add Personnel</h2>
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-black tracking-[0.2em] uppercase opacity-40">Assigning To:</span>
+                            <span className="text-[10px] font-black tracking-[0.2em] uppercase text-brand-emerald">{branchName}</span>
+                        </div>
                     </div>
-                    <button onClick={onCancel} className="p-1 px-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                        <X size={18} className="text-slate-400" />
+                    <button onClick={onCancel} className="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors">
+                        <X size={20} className="text-inherit opacity-40 hover:opacity-100" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-1">
-                        <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest px-1">Full Name</label>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                    <div>
+                        <label className="text-[10px] font-black tracking-widest uppercase opacity-40 mb-3 block px-1">Full Name</label>
                         <div className="relative">
-                            <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
-                            <input value={name} onChange={e => setName(e.target.value)} placeholder="Official Name" className={`${inputStyles} pl-8`} />
+                            <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-emerald opacity-30" size={18} />
+                            <input value={name} onChange={e => setName(e.target.value)} placeholder="Personnel Official Name" className="input-field pl-12 h-14 text-sm font-bold" />
                         </div>
                     </div>
 
-                    <div className="space-y-1">
-                        <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest px-1">Email Identity</label>
+                    <div>
+                        <label className="text-[10px] font-black tracking-widest uppercase opacity-40 mb-3 block px-1">Email Identity</label>
                         <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
-                            <input value={email} onChange={e => setEmail(e.target.value)} placeholder="manager@supermarket.com" className={`${inputStyles} pl-8`} />
+                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-emerald opacity-30" size={18} />
+                            <input value={email} onChange={e => setEmail(e.target.value)} placeholder="manager@supermarket.com" className="input-field pl-12 h-14 text-sm font-bold" />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1">
-                            <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest px-1">Phone</label>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="text-[10px] font-black tracking-widest uppercase opacity-40 mb-3 block px-1">Contact</label>
                             <div className="relative">
-                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
-                                <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+251..." className={`${inputStyles} pl-8`} />
+                                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-emerald opacity-30" size={18} />
+                                <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+251..." className="input-field pl-12 h-14 text-sm font-bold" />
                             </div>
                         </div>
-                        <div className="space-y-1">
-                            <label className="text-[8px] font-bold text-slate-400 uppercase tracking-widest px-1 flex justify-between">
-                                Password <button type="button" onClick={regeneratePassword} className="text-indigo-500"><RefreshCw size={10} /></button>
+                        <div>
+                            <label className="text-[10px] font-black tracking-widest uppercase opacity-40 mb-3 flex justify-between items-center px-1">
+                                Password
+                                <button type="button" onClick={regeneratePassword} className="text-brand-emerald opacity-50 hover:opacity-100"><RefreshCw size={12} /></button>
                             </label>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
-                                <input value={password} onChange={e => setPassword(e.target.value)} className={`${inputStyles} pl-8 font-mono`} />
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-emerald opacity-30" size={18} />
+                                <input value={password} onChange={e => setPassword(e.target.value)} className="input-field pl-12 h-14 font-mono font-bold text-sm tracking-widest" />
                             </div>
                         </div>
                     </div>
@@ -109,10 +110,22 @@ const SingleManagerForm: React.FC<Props> = ({ branchId, branchName, onSuccess, o
                     <button
                         type="submit"
                         disabled={loading || !name || !email}
-                        className="w-full h-9 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-xl shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 uppercase text-[10px] tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="btn-primary h-16 w-full rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-glow group hover:scale-[1.02] transition-all mt-4"
                     >
-                        {loading ? 'Adding...' : <><UserPlus size={14} /> Confirm Assignment</>}
+                        {loading ? (
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        ) : (
+                            <>
+                                <UserPlus size={18} className="group-hover:scale-110 transition-transform" />
+                                Confirm Assignment
+                            </>
+                        )}
                     </button>
+
+                    <div className="flex items-center justify-center gap-2 text-[9px] font-black tracking-widest uppercase opacity-20 mt-2">
+                        <Sparkles size={12} className="text-brand-emerald" />
+                        Secure Access Provisioning
+                    </div>
                 </form>
             </div>
         </div>

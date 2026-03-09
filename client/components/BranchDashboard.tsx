@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { BranchData, ManagerData } from '../types';
-import { Store, ChevronLeft, UserPlus, Users, MapPin, ShieldCheck, Mail, Phone, AlertCircle } from 'lucide-react';
+import { Store, ChevronLeft, UserPlus, Users, MapPin, ShieldCheck, Mail, Phone, AlertCircle, Trash2, Sparkles } from 'lucide-react';
 import SingleManagerForm from './SingleManagerForm';
 
 interface Props {
@@ -20,14 +19,9 @@ const BranchDashboard: React.FC<Props> = ({ branch, vendorName, onBack }) => {
             setLoading(true);
             const token = localStorage.getItem('authToken');
             const response = await fetch(`https://onboardingapi.bezawcurbside.com/api/onboard/branches/${branch.id}/managers`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
-            if (response.ok) {
-                const data = await response.json();
-                setManagers(data);
-            }
+            if (response.ok) setManagers(await response.json());
         } catch (error) {
             console.error("Failed to fetch managers", error);
         } finally {
@@ -35,113 +29,135 @@ const BranchDashboard: React.FC<Props> = ({ branch, vendorName, onBack }) => {
         }
     };
 
-    useEffect(() => {
-        fetchManagers();
-    }, [branch.id]);
+    useEffect(() => { fetchManagers(); }, [branch.id]);
 
-    const handleManagerAdded = () => {
-        setShowAddManager(false);
-        fetchManagers(); // Refresh list
+    const deleteManager = async (id: string) => {
+        if (!confirm('Are you sure you want to remove this personnel account?')) return;
+        try {
+            const token = localStorage.getItem('authToken');
+            const res = await fetch(`https://onboardingapi.bezawcurbside.com/api/onboard/managers/${id}`, {
+                method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) fetchManagers();
+        } catch (e) { console.error(e); }
     };
 
     return (
-        <div className="animate-fadeIn space-y-3">
-            {/* Header */}
-            <div className="bg-slate-900 rounded-lg p-2.5 text-white relative overflow-hidden shadow-2xl">
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-2.5">
-                    <div>
-                        <div className="flex items-center gap-1.5 text-emerald-400 font-bold uppercase tracking-widest text-[8px] mb-0.5">
-                            <Store size={10} /> {vendorName || 'Partner'} Dashboard
+        <div className="flex-1 flex flex-col gap-8 py-6">
+
+            {/* ── Header Banner ── */}
+            <div className="animate-slideUp glass rounded-[2.5rem] p-10 relative overflow-hidden group border border-border">
+                {/* Visual Decorations */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-emerald/50 to-transparent" />
+                <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-brand-emerald/5 blur-[80px]" />
+
+                <div className="relative flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6 text-center sm:text-left">
+                    <div className="flex-1">
+                        <div className="flex items-center justify-center sm:justify-start gap-3 mb-4">
+                            <div className="w-2 h-2 rounded-full bg-brand-emerald shadow-glow animate-pulse" />
+                            <span className="text-[10px] font-black tracking-[0.3em] uppercase text-brand-emerald">
+                                {vendorName || 'Partner'} Dashboard
+                            </span>
                         </div>
-                        <h2 className="text-base font-bold">{branch.name}</h2>
-                        <div className="flex items-center gap-1.5 mt-0.5 text-slate-400 font-medium text-[10px]">
-                            <MapPin size={10} /> {branch.address}
+                        <h2 className="font-display font-black text-4xl tracking-tighter mb-4 text-inherit">
+                            {branch.name}
+                        </h2>
+                        <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-medium opacity-50">
+                            <MapPin size={14} className="text-brand-emerald" />
+                            {branch.address}
                         </div>
                     </div>
+
                     <button
+                        id="add-personnel-btn"
                         onClick={() => setShowAddManager(true)}
-                        className="px-3 py-1.5 bg-white text-slate-900 font-bold rounded-lg hover:bg-emerald-50 transition-colors flex items-center gap-2 uppercase text-[9px] tracking-widest shadow-lg"
+                        className="btn-primary px-8 h-14 rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-glow group hover:scale-105 transition-all"
                     >
-                        <UserPlus size={14} /> Add Personnel
+                        <UserPlus size={18} /> Add Personnel
                     </button>
                 </div>
-
-                {/* Background Pattern */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
             </div>
 
-            {/* Managers List */}
-            <div className="space-y-2.5">
-                <div className="flex items-center gap-2 text-slate-900 dark:text-white">
-                    <div className="w-7 h-7 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg flex items-center justify-center">
-                        <Users size={14} />
+            {/* ── Staff Section ── */}
+            <div className="animate-slideUp delay-100 flex flex-col gap-6">
+                <div className="flex items-center gap-4 px-2">
+                    <div className="w-10 h-10 rounded-xl bg-brand-emerald/10 border border-brand-emerald/20 flex items-center justify-center">
+                        <Users size={18} className="text-brand-emerald" />
                     </div>
-                    <div>
-                        <h3 className="text-xs font-bold uppercase tracking-tight">Staff Management</h3>
-                        <p className="text-slate-500 text-[8px] font-bold uppercase tracking-widest">Active Personnel</p>
+                    <div className="flex-1">
+                        <h3 className="text-sm font-black tracking-widest uppercase text-inherit">Staff Management</h3>
+                        <p className="text-[9px] font-black tracking-widest uppercase opacity-30">Active Personnel Access</p>
                     </div>
+                    <div className="flex-1 h-px bg-gradient-to-r from-border to-transparent" />
                 </div>
 
                 {loading ? (
-                    <div className="p-12 text-center text-slate-400 animate-pulse font-bold uppercase tracking-widest text-xs">Loading Personnel...</div>
+                    <div className="glass rounded-[2rem] p-20 flex flex-col items-center justify-center gap-4 text-center border border-border">
+                        <div className="w-8 h-8 border-2 border-brand-emerald/30 border-t-brand-emerald rounded-full animate-spin" />
+                        <p className="text-[10px] font-black tracking-widest uppercase opacity-30">Fetching accounts...</p>
+                    </div>
                 ) : managers.length === 0 ? (
-                    <div className="bg-slate-50 dark:bg-slate-900/40 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center">
-                        <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 text-slate-300 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="border-2 border-dashed border-brand-emerald/20 rounded-[2.5rem] p-16 flex flex-col items-center text-center gap-6">
+                        <div className="w-16 h-16 rounded-2xl bg-brand-emerald/5 border border-brand-emerald/10 flex items-center justify-center opacity-30">
                             <AlertCircle size={32} />
                         </div>
-                        <h4 className="text-slate-900 dark:text-white font-bold">No Staff Assigned</h4>
-                        <p className="text-slate-500 text-sm mt-1 mb-6">This branch currently has no active managers.</p>
-                        <button
-                            onClick={() => setShowAddManager(true)}
-                            className="text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-widest text-[10px] hover:underline"
-                        >
-                            Assign First Manager
+                        <div>
+                            <h4 className="font-display font-black text-base uppercase tracking-widest mb-2">No Staff Assigned</h4>
+                            <p className="text-xs font-medium opacity-40 max-w-sm">
+                                This branch currently has no active personnel accounts. Personnel can login to manage local orders.
+                            </p>
+                        </div>
+                        <button onClick={() => setShowAddManager(true)} className="btn-primary py-3 px-8 text-[10px] uppercase font-black tracking-widest">
+                            <UserPlus size={14} /> Assign First Manager
                         </button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                         {managers.map(manager => (
-                            <div key={manager.id || Math.random()} className="bg-white dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 rounded-xl p-3 hover:shadow-lg hover:border-emerald-500/30 transition-all group">
-                                <div className="flex items-start gap-3">
-                                    <div className="w-8 h-8 bg-emerald-50 dark:bg-slate-800 text-emerald-600 dark:text-emerald-500 rounded-lg flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                                        <ShieldCheck size={16} />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h4 className="text-[13px] font-bold text-slate-900 dark:text-white truncate">{manager.name}</h4>
-                                        <div className="flex items-center gap-2 text-slate-400 text-[9px] font-bold uppercase tracking-widest mt-0.5">
-                                            Manager
+                            <div
+                                key={manager.id}
+                                className="glass group rounded-[2rem] p-6 border border-border relative overflow-hidden hover:scale-[1.02] transition-all duration-300"
+                            >
+                                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-emerald/20 to-transparent" />
+
+                                <div className="flex flex-col gap-6">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-emerald/10 to-brand-dark/20 border border-brand-emerald/30 flex items-center justify-center text-brand-emerald">
+                                                <ShieldCheck size={22} />
+                                            </div>
+                                            <div>
+                                                <div className="font-display font-black text-sm tracking-widest uppercase text-inherit">
+                                                    {manager.name}
+                                                </div>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <span className="text-[8px] font-black tracking-[0.2em] uppercase text-brand-emerald px-2 py-0.5 rounded-full bg-brand-emerald/10 border border-brand-emerald/20">
+                                                        Manager
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <div className="mt-1.5 space-y-0.5">
-                                            <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-[11px]">
-                                                <Mail size={12} className="text-slate-300" /> {manager.email}
-                                            </div>
-                                            {manager.phone && (
-                                                <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-[11px]">
-                                                    <Phone size={12} className="text-slate-300" /> {manager.phone}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    {/* Actions */}
-                                    <div className="flex flex-col gap-2 border-l border-slate-100 dark:border-slate-800 pl-3 items-end ml-3">
                                         <button
-                                            onClick={async () => {
-                                                try {
-                                                    const token = localStorage.getItem('authToken');
-                                                    const res = await fetch(`https://onboardingapi.bezawcurbside.com/api/onboard/managers/${manager.id}`, {
-                                                        method: 'DELETE',
-                                                        headers: { 'Authorization': `Bearer ${token}` }
-                                                    });
-                                                    if (res.ok) fetchManagers();
-                                                } catch (e) {
-                                                    console.error(e);
-                                                }
-                                            }}
-                                            className="px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 text-[9px] font-bold uppercase tracking-widest transition-colors w-20 text-center"
+                                            onClick={() => deleteManager(manager.id)}
+                                            className="p-2 bg-red-500/5 border border-red-500/10 rounded-xl text-red-500/30 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                                            title="Delete Account"
                                         >
-                                            Delete
+                                            <Trash2 size={16} />
                                         </button>
+                                    </div>
+
+                                    <div className="flex flex-col gap-3">
+                                        <div className="flex items-center gap-3 p-3 bg-surface/50 rounded-xl border border-border group-hover:border-brand-emerald/20 transition-colors overflow-hidden">
+                                            <Mail size={14} className="text-brand-emerald opacity-50 flex-shrink-0" />
+                                            <span className="text-[10px] font-bold opacity-60 truncate">{manager.email}</span>
+                                        </div>
+                                        {manager.phone && (
+                                            <div className="flex items-center gap-3 p-3 bg-surface/50 rounded-xl border border-border group-hover:border-brand-emerald/20 transition-colors">
+                                                <Phone size={14} className="text-brand-emerald opacity-50 flex-shrink-0" />
+                                                <span className="text-[10px] font-bold opacity-60">{manager.phone}</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -150,19 +166,28 @@ const BranchDashboard: React.FC<Props> = ({ branch, vendorName, onBack }) => {
                 )}
             </div>
 
-            <button onClick={onBack} className="flex items-center gap-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold uppercase tracking-widest text-[10px] transition-colors">
-                <ChevronLeft size={14} /> Back to Branches
+            {/* Back Button */}
+            <button
+                onClick={onBack}
+                className="self-center mt-4 py-4 px-8 flex items-center gap-2 text-[10px] font-black tracking-widest uppercase opacity-40 hover:opacity-100 hover:text-brand-emerald transition-all"
+            >
+                <ChevronLeft size={16} /> Back to Branch Portal
             </button>
 
             {/* Add Manager Modal */}
             {showAddManager && (
                 <SingleManagerForm
-                    branchId={branch.id}
-                    branchName={branch.name}
-                    onSuccess={handleManagerAdded}
+                    branchId={branch.id} branchName={branch.name}
+                    onSuccess={() => { setShowAddManager(false); fetchManagers(); }}
                     onCancel={() => setShowAddManager(false)}
                 />
             )}
+
+            {/* Security Footer */}
+            <div className="self-center flex items-center gap-2 text-[9px] font-black tracking-widest uppercase opacity-20 mt-10">
+                <Sparkles size={12} className="text-brand-emerald" />
+                Live Network Connection Established
+            </div>
         </div>
     );
 };

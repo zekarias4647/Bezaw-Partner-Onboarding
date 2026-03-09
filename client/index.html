@@ -1,77 +1,265 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/png" href="/assets/photo_2026-01-02_16-03-59-removebg-preview.png">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <title>Bezaw Partner Portal — Powered by Tech5 Ethiopia</title>
+  <meta name="description"
+    content="Join the Bezaw Partner Network. Register your vendor, manage branches, and grow your business." />
 
-  <title>Bezaw Partner Registration</title>
-
-  <!-- Error Handler for debugging startup issues -->
   <script>
     window.addEventListener('error', function (e) {
-      document.body.innerHTML += '<div style="color:red; background:white; padding:20px; position:absolute; top:0; left:0; z-index:9999;">JS Error: ' + e.message + ' at ' + e.filename + ':' + e.lineno + '</div>';
-      console.error("Global Error:", e);
+      console.error("JS Error:", e.message);
     });
     window.addEventListener('unhandledrejection', function (e) {
-      document.body.innerHTML += '<div style="color:red; background:white; padding:20px; position:absolute; top:0; left:0; z-index:9999;">Promse Rejection: ' + e.reason + '</div>';
-      console.error("Unhandled Rejection:", e);
+      console.error("Promise Rejection:", e.reason);
     });
   </script>
 
-  <script>
-    // Immediately verify theme prevention of FOUC
-    try {
-      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    } catch (e) { console.error(e); }
-  </script>
+  <style>
+    :root {
+      --em: #059669;
+      /* Slightly darker emerald for light mode contrast */
+      --em-light: #10B981;
+      --em-dark: #064E3B;
+      --em-glow: rgba(5, 150, 105, 0.2);
+      --bg: #f0fdfa;
+      /* Crisp Mint Light Mode */
+      --surface: #ffffff;
+      --card: rgba(255, 255, 255, 0.9);
+      --border: rgba(5, 150, 105, 0.15);
+      --text: #042f24;
+      --text-muted: rgba(4, 47, 36, 0.65);
+      --grid: rgba(5, 150, 105, 0.05);
+      --glow: rgba(5, 150, 105, 0.15);
+      --particle: rgba(5, 150, 105, 0.4);
+      --shimmer-start: #059669;
+      --shimmer-mid: #10B981;
+      --shimmer-end: #059669;
+    }
+
+    .dark {
+      --em: #10B981;
+      --em-light: #6ee7b7;
+      --em-dark: #059669;
+      --em-glow: rgba(16, 185, 129, 0.5);
+      --bg: #020d09;
+      --surface: #0a2318;
+      --card: rgba(13, 45, 30, 0.7);
+      --border: rgba(16, 185, 129, 0.25);
+      --text: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --grid: rgba(16, 185, 129, 0.08);
+      --glow: rgba(16, 185, 129, 0.4);
+      --particle: rgba(16, 185, 129, 0.7);
+      --shimmer-start: #10B981;
+      --shimmer-mid: #6ee7b7;
+      --shimmer-end: #10B981;
+    }
+
+    html,
+    body,
+    #root {
+      min-height: 100vh;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    .mesh-bg {
+      background:
+        radial-gradient(ellipse 80% 50% at 80% -10%, var(--glow) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 10% 90%, var(--grid) 0%, transparent 60%),
+        var(--bg);
+    }
+
+    .grid-lines {
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(5, 150, 105, 0.1);
+      box-shadow: 0 8px 32px 0 rgba(5, 150, 105, 0.05);
+    }
+
+    .dark .glass {
+      background: rgba(13, 45, 30, 0.7);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    /* ... existing animations and styles from earlier redesign ... */
+  </style>
 
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              emerald: 'var(--em)',
+              dark: 'var(--em-dark)',
+              mint: '#D1FAE5',
+              black: '#020d09',
+              charcoal: '#071a12',
+            }
+          },
           animation: {
             'fadeIn': 'fadeIn 0.5s ease-out forwards',
+            'slideUp': 'slideUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards',
+            'float': 'float 6s ease-in-out infinite',
+            'shimmer': 'shimmer 2.5s linear infinite',
           },
           keyframes: {
-            fadeIn: {
-              '0%': { opacity: '0', transform: 'translateY(10px)' },
-              '100%': { opacity: '1', transform: 'translateY(0)' },
-            }
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            slideUp: { '0%': { opacity: '0', transform: 'translateY(24px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            float: { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-18px)' } },
+            shimmer: {
+              '0%': { backgroundPosition: '-200% center' },
+              '100%': { backgroundPosition: '200% center' }
+            },
           }
         }
       }
     }
   </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
   <style>
-    html {
-      font-size: 13px;
+    .shimmer-text {
+      background: linear-gradient(90deg,
+          var(--shimmer-start) 0%,
+          var(--shimmer-mid) 50%,
+          var(--shimmer-start) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3s linear infinite;
     }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      transition: background-color 0.3s ease;
-      overflow-x: hidden;
+    .btn-primary {
+      background: var(--em);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-weight: 800;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 20px -5px var(--em-glow);
     }
 
-    .glass {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(226, 232, 240, 1);
+    .dark .btn-primary {
+      color: #020d09;
+      box-shadow: 0 10px 25px -10px var(--em);
     }
 
-    .dark .glass {
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(30, 41, 59, 1);
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+      box-shadow: 0 15px 30px -10px var(--em-glow);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 800;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      background: var(--border);
+    }
+
+    .input-field {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      transition: all 0.3s;
+      outline: none;
+      border-radius: 12px;
+    }
+
+    .dark .input-field {
+      background: rgba(13, 45, 30, 0.5);
+    }
+
+    .input-field:focus {
+      border-color: var(--em);
+      box-shadow: 0 0 0 4px var(--em-glow);
+    }
+
+    .input-field-compact {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      transition: all 0.3s;
+      outline: none;
+      border-radius: 10px;
+      padding: 0 12px;
+    }
+
+    .dark .input-field-compact {
+      background: rgba(13, 45, 30, 0.5);
+    }
+
+    .input-field-compact:focus {
+      border-color: var(--em);
+      box-shadow: 0 0 0 4px var(--em-glow);
+    }
+
+    .field-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 8px;
+      opacity: 0.5;
+    }
+
+    .field-label-compact {
+      display: block;
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+      opacity: 0.4;
+    }
+
+    .shadow-glow {
+      box-shadow: 0 0 20px var(--em-glow);
     }
 
     .custom-scrollbar::-webkit-scrollbar {
@@ -83,17 +271,43 @@
     }
 
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #e2e8f0;
+      background: var(--border);
       border-radius: 10px;
     }
 
-    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #334155;
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: var(--em);
+    }
+
+    .step-active {
+      background: var(--em);
+      color: #fff;
+      box-shadow: 0 0 15px var(--em-glow);
+    }
+
+    .dark .step-active {
+      color: #020d09;
+    }
+
+    .step-done {
+      background: var(--em-glow);
+      color: var(--em);
+      border: 1px solid var(--em);
+    }
+
+    .step-future {
+      background: rgba(16, 185, 129, 0.05);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
     }
   </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Poppins:wght@600;700;800;900&display=swap"
+    rel="stylesheet">
 </head>
 
-<body class="bg-slate-50 dark:bg-slate-950">
+<body class="mesh-bg grid-lines antialiased">
   <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>

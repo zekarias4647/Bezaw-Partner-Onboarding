@@ -13,7 +13,8 @@ import {
     AlertCircle,
     ShieldCheck,
     FileText,
-    Image as ImageIcon
+    Image as ImageIcon,
+    Sparkles
 } from 'lucide-react';
 
 interface Props {
@@ -119,95 +120,98 @@ const VendorSettings: React.FC<Props> = ({ vendor, onUpdate, onClose }) => {
         return `https://onboardingapi.bezawcurbside.com/${path}`;
     };
 
-    const inputStyles = "w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all font-medium";
-    const labelStyles = "block text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1 ml-1";
-
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-fadeIn">
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm animate-fadeIn"
+                className="absolute inset-0 bg-black/70 backdrop-blur-md animate-fadeIn"
                 onClick={onClose}
             />
 
             {/* Modal */}
-            <div className="relative w-full max-w-2xl bg-white dark:bg-slate-950 rounded-2xl shadow-2xl overflow-hidden animate-slideUp flex flex-col max-h-[90vh]">
+            <div className="glass relative w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-slideUp flex flex-col max-h-[90vh] border border-brand-emerald/20">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-emerald to-transparent" />
+
                 {/* Header */}
-                <div className="p-4 border-b dark:border-slate-900 flex items-center justify-between bg-gradient-to-r from-emerald-600/5 to-transparent">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                            <Building2 size={20} />
+                <div className="p-8 pb-4 flex items-center justify-between border-b border-white/5 bg-brand-emerald/5">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-brand-emerald to-brand-dark rounded-xl flex items-center justify-center text-white shadow-glow">
+                            <Building2 size={24} />
                         </div>
                         <div>
-                            <h2 className="text-base font-bold text-slate-900 dark:text-white">Business Settings</h2>
-                            <p className="text-slate-500 text-[9px] font-bold uppercase tracking-widest">Update your partner profile</p>
+                            <h2 className="font-display font-black text-2xl tracking-tighter text-inherit">Business Profile</h2>
+                            <div className="flex items-center gap-2">
+                                <Sparkles size={12} className="text-brand-emerald" />
+                                <p className="text-[10px] font-black tracking-widest uppercase opacity-40">System Core Settings</p>
+                            </div>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg transition-colors text-slate-400"
+                        className="w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors text-inherit opacity-40 hover:opacity-100"
                     >
-                        <X size={18} />
+                        <X size={20} />
                     </button>
                 </div>
 
                 {/* Content */}
-                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
                     {message && (
-                        <div className={`p-3 rounded-xl flex items-center gap-3 animate-fadeIn ${message.type === 'success'
-                            ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40'
-                            : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/40'
+                        <div className={`p-4 rounded-2xl flex items-center gap-4 animate-slideUp ${message.type === 'success'
+                            ? 'bg-brand-emerald/10 text-brand-emerald border border-brand-emerald/20 shadow-glow-sm'
+                            : 'bg-red-500/10 text-red-500 border border-red-500/20'
                             }`}>
-                            {message.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
-                            <span className="text-xs font-bold uppercase tracking-tight">{message.text}</span>
+                            {message.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
+                            <span className="text-[11px] font-black uppercase tracking-widest">{message.text}</span>
                         </div>
                     )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Identity & Contact */}
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-2 border-l-4 border-emerald-500 pl-2.5">
-                                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Identity & Contact</h3>
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-3 px-2">
+                                <span className="text-[10px] font-black tracking-[0.3em] uppercase text-brand-emerald">Identity & Node</span>
+                                <div className="flex-1 h-px bg-gradient-to-r from-brand-emerald/20 to-transparent" />
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="space-y-5">
                                 <div>
-                                    <label className={labelStyles}>Business Name</label>
+                                    <label className="field-label px-1">Legal Entity Name</label>
                                     <div className="relative">
-                                        <Building2 size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                        <Building2 size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-emerald opacity-30" />
                                         <input
                                             name="name"
                                             value={formData.name}
                                             onChange={handleChange}
-                                            className={`${inputStyles} pl-10`}
-                                            placeholder="Legal Entity Name"
+                                            className="input-field pl-12 h-12 text-sm font-bold"
+                                            placeholder="Supermarket Name"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className={labelStyles}>Email Address</label>
+                                        <label className="field-label px-1">Primary Email</label>
                                         <div className="relative">
-                                            <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                            <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-emerald opacity-30" />
                                             <input
                                                 name="email"
                                                 value={formData.email}
                                                 onChange={handleChange}
-                                                className={`${inputStyles} pl-10`}
+                                                className="input-field pl-12 h-12 text-sm font-bold"
                                                 placeholder="contact@email.com"
                                             />
                                         </div>
                                     </div>
                                     <div>
-                                        <label className={labelStyles}>Phone Number</label>
+                                        <label className="field-label px-1">Operational Phone</label>
                                         <div className="relative">
-                                            <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                            <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-emerald opacity-30" />
                                             <input
                                                 name="phone"
                                                 value={formData.phone}
                                                 onChange={handleChange}
-                                                className={`${inputStyles} pl-10`}
+                                                className="input-field pl-12 h-12 text-sm font-bold"
                                                 placeholder="+251..."
                                             />
                                         </div>
@@ -215,28 +219,28 @@ const VendorSettings: React.FC<Props> = ({ vendor, onUpdate, onClose }) => {
                                 </div>
 
                                 <div>
-                                    <label className={labelStyles}>Website URL</label>
+                                    <label className="field-label px-1">Digital Presence (URL)</label>
                                     <div className="relative">
-                                        <Globe size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                        <Globe size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-emerald opacity-30" />
                                         <input
                                             name="website"
                                             value={formData.website || ''}
                                             onChange={handleChange}
-                                            className={`${inputStyles} pl-10`}
-                                            placeholder="www.example.com"
+                                            className="input-field pl-12 h-12 text-sm font-bold"
+                                            placeholder="www.supermarket-network.com"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className={labelStyles}>Tax ID (TIN Number)</label>
+                                    <label className="field-label px-1">Tax Identification (TIN)</label>
                                     <div className="relative">
-                                        <Hash size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                        <Hash size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-emerald opacity-30" />
                                         <input
                                             name="tin"
                                             value={formData.tin}
                                             onChange={handleChange}
-                                            className={`${inputStyles} pl-10 font-mono`}
+                                            className="input-field pl-12 h-12 font-mono font-bold tracking-widest text-sm"
                                             placeholder="0001234567"
                                         />
                                     </div>
@@ -245,97 +249,85 @@ const VendorSettings: React.FC<Props> = ({ vendor, onUpdate, onClose }) => {
                         </div>
 
                         {/* Media & Assets */}
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-2 border-l-4 border-emerald-500 pl-2.5">
-                                <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Media & Documents</h3>
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-3 px-2">
+                                <span className="text-[10px] font-black tracking-[0.3em] uppercase text-brand-emerald">Media & Core Assets</span>
+                                <div className="flex-1 h-px bg-gradient-to-r from-brand-emerald/20 to-transparent" />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 {/* Logo */}
-                                <div className="space-y-1.5">
-                                    <label className={labelStyles}>Brand Logo</label>
-                                    <div className="relative aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-dashed border-slate-200 dark:border-slate-800 group transition-all shadow-sm">
+                                <div className="space-y-3">
+                                    <label className="field-label px-1">Brand Logo</label>
+                                    <div className="relative aspect-square rounded-2xl overflow-hidden bg-white/5 border-2 border-dashed border-brand-emerald/10 group transition-all hover:border-brand-emerald/40 shadow-glow-sm">
                                         <img
                                             src={getFullUrl(previews.logo)}
                                             alt="Logo"
-                                            className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform"
+                                            className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform"
                                         />
-                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                                             <input type="file" id="logo-up" className="hidden" onChange={handleFileUpload('logo')} accept="image/*" />
-                                            <label htmlFor="logo-up" className="cursor-pointer bg-white text-slate-900 px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest flex items-center gap-2">
-                                                <Upload size={12} /> Change
+                                            <label htmlFor="logo-up" className="cursor-pointer bg-white text-brand-dark px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition-all">
+                                                <Upload size={14} /> Update
                                             </label>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Storefront */}
-                                <div className="space-y-1.5">
-                                    <label className={labelStyles}>Storefront Image</label>
-                                    <div className="relative aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-dashed border-slate-200 dark:border-slate-800 group transition-all shadow-sm">
+                                <div className="space-y-3">
+                                    <label className="field-label px-1">Storefront</label>
+                                    <div className="relative aspect-square rounded-2xl overflow-hidden bg-white/5 border-2 border-dashed border-brand-emerald/10 group transition-all hover:border-brand-emerald/40">
                                         {previews.image ? (
                                             <img
                                                 src={getFullUrl(previews.image)}
                                                 alt="Storefront"
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform"
                                             />
                                         ) : (
-                                            <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                                                <ImageIcon size={32} />
+                                            <div className="flex flex-col items-center justify-center h-full text-brand-emerald opacity-20">
+                                                <ImageIcon size={40} />
                                             </div>
                                         )}
-                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                                             <input type="file" id="image-up" className="hidden" onChange={handleFileUpload('image')} accept="image/*" />
-                                            <label htmlFor="image-up" className="cursor-pointer bg-white text-slate-900 px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest flex items-center gap-2">
-                                                <Upload size={12} /> Change
+                                            <label htmlFor="image-up" className="cursor-pointer bg-white text-brand-dark px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition-all">
+                                                <Upload size={14} /> Update
                                             </label>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* VAT Cert */}
-                                <div className="space-y-1.5">
-                                    <label className={labelStyles}>VAT Certificate</label>
-                                    <div className="relative aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-dashed border-slate-200 dark:border-slate-800 group transition-all shadow-sm">
-                                        {previews.vatCert ? (
-                                            <img
-                                                src={getFullUrl(previews.vatCert)}
-                                                alt="VAT Cert"
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                            />
-                                        ) : (
-                                            <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                                                <ShieldCheck size={32} />
-                                            </div>
-                                        )}
-                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                {/* Documents */}
+                                <div className="space-y-3">
+                                    <label className="field-label px-1">VAT Proof</label>
+                                    <div className="relative aspect-square rounded-2xl overflow-hidden bg-white/5 border-2 border-dashed border-brand-emerald/10 group transition-all hover:border-brand-emerald/40 overflow-hidden">
+                                        <img
+                                            src={getFullUrl(previews.vatCert)}
+                                            alt="VAT"
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform blur-[2px] opacity-40 group-hover:blur-0 group-hover:opacity-100 transition-all"
+                                        />
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                                             <input type="file" id="vat-up" className="hidden" onChange={handleFileUpload('vatCert')} accept="image/*,application/pdf" />
-                                            <label htmlFor="vat-up" className="cursor-pointer bg-white text-slate-900 px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest flex items-center gap-2">
-                                                <Upload size={12} /> Update
+                                            <label htmlFor="vat-up" className="cursor-pointer bg-white text-brand-dark px-3 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest flex items-center gap-2">
+                                                <Upload size={12} /> Replace
                                             </label>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Business License */}
-                                <div className="space-y-1.5">
-                                    <label className={labelStyles}>Business License</label>
-                                    <div className="relative aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-dashed border-slate-200 dark:border-slate-800 group transition-all shadow-sm">
-                                        {previews.businessLicense ? (
-                                            <img
-                                                src={getFullUrl(previews.businessLicense)}
-                                                alt="Business License"
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                                            />
-                                        ) : (
-                                            <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                                                <FileText size={32} />
-                                            </div>
-                                        )}
-                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <div className="space-y-3">
+                                    <label className="field-label px-1">Licensing</label>
+                                    <div className="relative aspect-square rounded-2xl overflow-hidden bg-white/5 border-2 border-dashed border-brand-emerald/10 group transition-all hover:border-brand-emerald/40 overflow-hidden">
+                                        <img
+                                            src={getFullUrl(previews.businessLicense)}
+                                            alt="License"
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform blur-[2px] opacity-40 group-hover:blur-0 group-hover:opacity-100 transition-all"
+                                        />
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                                             <input type="file" id="license-up" className="hidden" onChange={handleFileUpload('businessLicense')} accept="image/*,application/pdf" />
-                                            <label htmlFor="license-up" className="cursor-pointer bg-white text-slate-900 px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-widest flex items-center gap-2">
-                                                <Upload size={12} /> Update
+                                            <label htmlFor="license-up" className="cursor-pointer bg-white text-brand-dark px-3 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest flex items-center gap-2">
+                                                <Upload size={12} /> Replace
                                             </label>
                                         </div>
                                     </div>
@@ -346,15 +338,15 @@ const VendorSettings: React.FC<Props> = ({ vendor, onUpdate, onClose }) => {
                 </form>
 
                 {/* Footer */}
-                <div className="p-4 border-t dark:border-slate-900 bg-slate-50/50 dark:bg-slate-900/10 flex items-center justify-between">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                        <ShieldCheck size={14} className="text-emerald-500" /> Secure Data
+                <div className="p-8 border-t border-white/5 bg-brand-emerald/5 flex items-center justify-between">
+                    <p className="text-[10px] font-black text-brand-emerald uppercase tracking-[0.25em] flex items-center gap-2 animate-pulse">
+                        <ShieldCheck size={16} /> Encrypted Node Connection
                     </p>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-slate-600 dark:text-slate-400 font-bold text-[10px] uppercase tracking-widest hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg transition-all"
+                            className="px-6 py-3 text-inherit opacity-40 hover:opacity-100 font-black text-[10px] uppercase tracking-widest transition-all"
                         >
                             Discard
                         </button>
@@ -362,14 +354,14 @@ const VendorSettings: React.FC<Props> = ({ vendor, onUpdate, onClose }) => {
                             type="submit"
                             onClick={handleSubmit}
                             disabled={isSubmitting}
-                            className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-xl shadow-emerald-500/20 transition-all flex items-center gap-2 disabled:opacity-50 text-[10px] uppercase tracking-widest"
+                            className="px-10 py-3 bg-brand-emerald hover:brightness-110 text-brand-dark font-black rounded-xl shadow-glow transition-all flex items-center gap-3 disabled:opacity-50 text-[10px] uppercase tracking-widest"
                         >
                             {isSubmitting ? (
-                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                <div className="w-4 h-4 border-2 border-brand-dark/30 border-t-brand-dark rounded-full animate-spin" />
                             ) : (
-                                <Save size={14} />
+                                <Save size={16} />
                             )}
-                            Save Changes
+                            Sync Profile
                         </button>
                     </div>
                 </div>
@@ -377,14 +369,5 @@ const VendorSettings: React.FC<Props> = ({ vendor, onUpdate, onClose }) => {
         </div>
     );
 };
-
-const RefreshCw: React.FC<{ size?: number }> = ({ size = 24 }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-        <path d="M21 3v5h-5" />
-        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-        <path d="M3 21v-5h5" />
-    </svg>
-);
 
 export default VendorSettings;
