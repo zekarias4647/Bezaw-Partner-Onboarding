@@ -72,7 +72,7 @@ const VendorSettings: React.FC<Props> = ({ vendor, onUpdate, onClose }) => {
             if (formData.imageFile) data.append('image', formData.imageFile);
 
             const token = localStorage.getItem('authToken');
-            const response = await fetch('http://localhost:5002/api/settings/vendor', {
+            const response = await fetch('https://onboardingapi.bezawcurbside.com/api/settings/vendor', {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -116,7 +116,7 @@ const VendorSettings: React.FC<Props> = ({ vendor, onUpdate, onClose }) => {
     const getFullUrl = (path: string) => {
         if (!path) return '';
         if (path.startsWith('http') || path.startsWith('data:')) return path;
-        return `http://localhost:5002/${path}`;
+        return `https://onboardingapi.bezawcurbside.com/${path}`;
     };
 
     const inputStyles = "w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all font-medium";

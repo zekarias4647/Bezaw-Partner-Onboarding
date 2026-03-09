@@ -21,7 +21,7 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
   useEffect(() => {
     const fetchBusinessTypes = async () => {
       try {
-        const response = await fetch('http://localhost:5002/api/onboard/business-types');
+        const response = await fetch('https://onboardingapi.bezawcurbside.com/api/onboard/business-types');
         if (response.ok) {
           const fetchedTypes = await response.json();
           setBusinessTypes(fetchedTypes);

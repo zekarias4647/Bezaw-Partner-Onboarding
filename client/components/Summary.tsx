@@ -44,7 +44,7 @@ const Summary: React.FC<Props> = ({ vendor, branches, managers, onBack, onComple
       formData.append('branches', JSON.stringify(branches));
       formData.append('managers', JSON.stringify(managers));
 
-      const response = await fetch('http://localhost:5002/api/onboard/register', {
+      const response = await fetch('https://onboardingapi.bezawcurbside.com/api/onboard/register', {
         method: 'POST',
         body: formData,
       });
@@ -116,7 +116,7 @@ const Summary: React.FC<Props> = ({ vendor, branches, managers, onBack, onComple
               <img
                 src={vendor.logo.startsWith('http') || vendor.logo.startsWith('data:')
                   ? vendor.logo
-                  : `http://localhost:5002${vendor.logo.startsWith('/') ? '' : '/'}${vendor.logo}`
+                  : `https://onboardingapi.bezawcurbside.com${vendor.logo.startsWith('/') ? '' : '/'}${vendor.logo}`
                 }
                 className="w-10 h-10 object-cover rounded-xl shadow-lg border border-slate-100 dark:border-slate-800"
               />

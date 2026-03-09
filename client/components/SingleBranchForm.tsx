@@ -36,7 +36,7 @@ const SingleBranchForm: React.FC<Props> = ({ vendorId, onSuccess, onCancel }) =>
         setLoading(true);
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch(`http://localhost:5002/api/onboard/${vendorId}/branches`, {
+            const response = await fetch(`https://onboardingapi.bezawcurbside.com/api/onboard/${vendorId}/branches`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -33,7 +33,7 @@ const SelectBranch: React.FC<Props> = ({ vendor, branches, onSelect, onAddNew, o
             <div className="w-full h-full bg-white dark:bg-slate-900 rounded-lg flex items-center justify-center overflow-hidden">
               {vendor.logo ? (
                 <img
-                  src={vendor.logo.startsWith('http') ? vendor.logo : `http://localhost:5002${vendor.logo.startsWith('/') ? '' : '/'}${vendor.logo}`}
+                  src={vendor.logo.startsWith('http') ? vendor.logo : `https://onboardingapi.bezawcurbside.com${vendor.logo.startsWith('/') ? '' : '/'}${vendor.logo}`}
                   alt={vendor.name}
                   className="w-full h-full object-contain p-2"
                 />

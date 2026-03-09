@@ -27,7 +27,7 @@ const SingleManagerForm: React.FC<Props> = ({ branchId, branchName, onSuccess, o
         setLoading(true);
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch('http://localhost:5002/api/onboard/managers', {
+            const response = await fetch('https://onboardingapi.bezawcurbside.com/api/onboard/managers', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

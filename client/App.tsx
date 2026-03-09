@@ -63,7 +63,7 @@ const App: React.FC = () => {
     if (vendor.regCode) {
       try {
         const token = localStorage.getItem('authToken');
-        const res = await fetch(`http://localhost:5002/api/onboard/${vendor.regCode}/branches`, {
+        const res = await fetch(`https://onboardingapi.bezawcurbside.com/api/onboard/${vendor.regCode}/branches`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -254,7 +254,7 @@ const App: React.FC = () => {
               setVendor(mappedVendor);
 
               try {
-                const res = await fetch(`http://localhost:5002/api/onboard/${data.id}/branches`, {
+                const res = await fetch(`https://onboardingapi.bezawcurbside.com/api/onboard/${data.id}/branches`, {
                   headers: {
                     'Authorization': `Bearer ${token}`
                   }
