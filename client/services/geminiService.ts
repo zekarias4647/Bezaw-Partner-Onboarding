@@ -17,7 +17,7 @@ export async function getOnboardingTips(businessName: string) {
     return response.text;
   } catch (error) {
     console.error("Gemini Error:", error);
-    return "Ready to revolutionize drive-through shopping? Let's get started!";
+    return "Ready to revolutionize drive-through Shopping? Let's get started!";
   }
 }
 
