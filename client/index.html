@@ -19,43 +19,41 @@
 
   <style>
     :root {
-      --em: #059669;
-      /* Slightly darker emerald for light mode contrast */
-      --em-light: #10B981;
-      --em-dark: #064E3B;
-      --em-glow: rgba(5, 150, 105, 0.2);
-      --bg: #f0fdfa;
-      /* Crisp Mint Light Mode */
+      --em: #0ea5e9; /* Professional Blue/Teal Accent */
+      --em-light: #38bdf8;
+      --em-dark: #0369a1;
+      --em-glow: rgba(14, 165, 233, 0.15);
+      --bg: #f8fafc; /* Crisp Slate Light Mode */
       --surface: #ffffff;
-      --card: rgba(255, 255, 255, 0.9);
-      --border: rgba(5, 150, 105, 0.15);
-      --text: #042f24;
-      --text-muted: rgba(4, 47, 36, 0.65);
-      --grid: rgba(5, 150, 105, 0.05);
-      --glow: rgba(5, 150, 105, 0.15);
-      --particle: rgba(5, 150, 105, 0.4);
-      --shimmer-start: #059669;
-      --shimmer-mid: #10B981;
-      --shimmer-end: #059669;
+      --card: #ffffff;
+      --border: #e2e8f0; 
+      --text: #0f172a; /* Deep Slate Text */
+      --text-muted: rgba(15, 23, 42, 0.5);
+      --grid: rgba(15, 23, 42, 0.03);
+      --glow: rgba(14, 165, 233, 0.1);
+      --particle: rgba(14, 165, 233, 0.3);
+      --shimmer-start: #0ea5e9;
+      --shimmer-mid: #7dd3fc;
+      --shimmer-end: #0ea5e9;
     }
 
     .dark {
-      --em: #10B981;
-      --em-light: #6ee7b7;
-      --em-dark: #059669;
-      --em-glow: rgba(16, 185, 129, 0.5);
-      --bg: #020d09;
-      --surface: #0a2318;
-      --card: rgba(13, 45, 30, 0.7);
-      --border: rgba(16, 185, 129, 0.25);
-      --text: #ffffff;
-      --text-muted: rgba(255, 255, 255, 0.5);
-      --grid: rgba(16, 185, 129, 0.08);
-      --glow: rgba(16, 185, 129, 0.4);
-      --particle: rgba(16, 185, 129, 0.7);
-      --shimmer-start: #10B981;
+      --em: #10b981; /* High-contrast emerald for dark mode */
+      --em-light: #34d399;
+      --em-dark: #064e3b;
+      --em-glow: rgba(16, 185, 129, 0.25);
+      --bg: #020617; /* Deepest Midnight */
+      --surface: #0f172a; /* Slate Surface */
+      --card: #0f172a;
+      --border: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --grid: rgba(148, 163, 184, 0.04);
+      --glow: rgba(16, 185, 129, 0.15);
+      --particle: rgba(16, 185, 129, 0.5);
+      --shimmer-start: #10b981;
       --shimmer-mid: #6ee7b7;
-      --shimmer-end: #10B981;
+      --shimmer-end: #10b981;
     }
 
     html,
@@ -88,16 +86,15 @@
     }
 
     .glass {
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(5, 150, 105, 0.1);
-      box-shadow: 0 8px 32px 0 rgba(5, 150, 105, 0.05);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
     }
 
     .dark .glass {
-      background: rgba(13, 45, 30, 0.7);
-      border: 1px solid rgba(16, 185, 129, 0.15);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 48px 0 rgba(0, 0, 0, 0.5);
     }
 
     /* ... existing animations and styles from earlier redesign ... */
@@ -160,26 +157,27 @@
       align-items: center;
       justify-content: center;
       gap: 12px;
-      font-weight: 800;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      font-weight: 700;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 10px 20px -5px var(--em-glow);
+      border: none;
+      box-shadow: 0 4px 12px var(--em-glow);
     }
 
     .dark .btn-primary {
-      color: #020d09;
-      box-shadow: 0 10px 25px -10px var(--em);
+      color: #020617;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
 
     .btn-primary:hover {
-      transform: translateY(-2px);
-      filter: brightness(1.1);
-      box-shadow: 0 15px 30px -10px var(--em-glow);
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      box-shadow: 0 8px 20px var(--em-glow);
     }
 
     .btn-primary:active {
       transform: translateY(0px);
+      filter: brightness(0.95);
     }
 
     .btn-ghost {
@@ -189,14 +187,15 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      font-weight: 800;
-      transition: all 0.3s;
+      font-weight: 700;
+      transition: all 0.2s;
       cursor: pointer;
       border: 1px solid var(--border);
     }
 
     .btn-ghost:hover {
       background: var(--border);
+      color: var(--em);
     }
 
     .input-field {
@@ -204,17 +203,19 @@
       background: var(--surface);
       border: 1px solid var(--border);
       color: var(--text);
-      transition: all 0.3s;
+      transition: all 0.2s;
       outline: none;
       border-radius: 12px;
+      font-weight: 500;
     }
 
     .dark .input-field {
-      background: rgba(13, 45, 30, 0.5);
+      background: rgba(30, 41, 59, 0.5); /* Slate-800 focus */
     }
 
     .input-field:focus {
       border-color: var(--em);
+      background: var(--surface);
       box-shadow: 0 0 0 4px var(--em-glow);
     }
 
@@ -309,7 +310,7 @@
 
 <body class="mesh-bg grid-lines antialiased">
   <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
+  <script type="module" src="./src/index.tsx"></script>
 </body>
 
 </html>

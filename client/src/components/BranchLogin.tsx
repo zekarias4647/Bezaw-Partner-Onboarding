@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ShieldCheck, ArrowRight, ArrowLeft, Key, Sparkles, Lock } from 'lucide-react';
 import { VendorData } from '../types';
 import PageDecorations from './PageDecorations';
+import { API_ROUTES } from '../api';
 
 interface Props {
   onSuccess: (vendor: VendorData, token: string) => void;
@@ -20,7 +21,7 @@ const BranchLogin: React.FC<Props> = ({ onSuccess, onBack }) => {
     setError('');
 
     try {
-      const response = await fetch('https://onboardingapi.bezawcurbside.com/api/onboard/login', {
+      const response = await fetch(API_ROUTES.LOGIN, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ regCode: code })

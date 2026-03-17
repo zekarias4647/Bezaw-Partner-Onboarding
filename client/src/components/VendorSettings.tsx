@@ -17,6 +17,8 @@ import {
     Sparkles
 } from 'lucide-react';
 
+import { API_ROUTES } from '../api';
+
 interface Props {
     vendor: VendorData;
     onUpdate: (updatedVendor: VendorData) => void;
@@ -73,7 +75,7 @@ const VendorSettings: React.FC<Props> = ({ vendor, onUpdate, onClose }) => {
             if (formData.imageFile) data.append('image', formData.imageFile);
 
             const token = localStorage.getItem('authToken');
-            const response = await fetch('https://onboardingapi.bezawcurbside.com/api/settings/vendor', {
+            const response = await fetch(API_ROUTES.VENDOR_SETTINGS, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -117,7 +119,7 @@ const VendorSettings: React.FC<Props> = ({ vendor, onUpdate, onClose }) => {
     const getFullUrl = (path: string) => {
         if (!path) return '';
         if (path.startsWith('http') || path.startsWith('data:')) return path;
-        return `https://onboardingapi.bezawcurbside.com/${path}`;
+        return API_ROUTES.IMAGE_PATH(path);
     };
 
     return (

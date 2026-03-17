@@ -19,7 +19,9 @@ const storage = multer.diskStorage({
         cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname);
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname).toLowerCase();
+        cb(null, file.fieldname + '-' + uniqueSuffix + ext);
     }
 });
 
@@ -71,22 +73,22 @@ router.put('/vendor', authenticateToken, upload.fields([
 
         if (req.files) {
             if (req.files['logo']) {
-                const logoPath = `uploads/${req.files['logo'][0].originalname}`;
+                const logoPath = `uploads/${req.files['logo'][0].filename}`;
                 updateFields.push(`logo = $${counter++}`);
                 values.push(logoPath);
             }
             if (req.files['vatCert']) {
-                const vatCertPath = `uploads/${req.files['vatCert'][0].originalname}`;
+                const vatCertPath = `uploads/${req.files['vatCert'][0].filename}`;
                 updateFields.push(`vat_cert = $${counter++}`);
                 values.push(vatCertPath);
             }
             if (req.files['businessLicense']) {
-                const licensePath = `uploads/${req.files['businessLicense'][0].originalname}`;
+                const licensePath = `uploads/${req.files['businessLicense'][0].filename}`;
                 updateFields.push(`business_license = $${counter++}`);
                 values.push(licensePath);
             }
             if (req.files['image']) {
-                const imagePath = `uploads/${req.files['image'][0].originalname}`;
+                const imagePath = `uploads/${req.files['image'][0].filename}`;
                 updateFields.push(`image = $${counter++}`);
                 values.push(imagePath);
             }

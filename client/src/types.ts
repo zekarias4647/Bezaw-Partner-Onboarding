@@ -24,11 +24,15 @@ export interface BranchData {
   id: string;
   name: string;
   address: string;
-  coordinates: string;
+  coordinates?: string;
+  map_pin?: string;
   phone: string;
   openingHours?: string;
   closingHours?: string;
-  isBusy: boolean;
+  opening_hours?: string;
+  closing_hours?: string;
+  isBusy?: boolean;
+  is_busy?: boolean;
 }
 
 export interface ManagerData {
@@ -47,4 +51,4 @@ export enum Step {
   SUMMARY = 3
 }
 
-export type ViewState = 'LANDING' | 'REGISTER' | 'BRANCH_LOGIN' | 'SELECT_BRANCH';
+export type ViewState = 'LANDING' | 'REGISTER' | 'BRANCH_LOGIN' | 'SELECT_BRANCH' | 'BRANCH_DASHBOARD';

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ShieldCheck, UserPlus, Mail, Phone, Lock, ChevronRight, RefreshCw, X, Sparkles } from 'lucide-react';
+import { API_ROUTES } from '../api';
 
 interface Props {
     branchId: string;
@@ -26,7 +27,7 @@ const SingleManagerForm: React.FC<Props> = ({ branchId, branchName, onSuccess, o
         setLoading(true);
         try {
             const token = localStorage.getItem('authToken');
-            const response = await fetch('https://onboardingapi.bezawcurbside.com/api/onboard/managers', {
+            const response = await fetch(API_ROUTES.MANAGERS, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -54,7 +55,7 @@ const SingleManagerForm: React.FC<Props> = ({ branchId, branchName, onSuccess, o
 
     return (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[100] flex items-center justify-center p-6 animate-fadeIn">
-            <div className="glass w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl border border-brand-emerald/20 relative overflow-hidden">
+            <div className="w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl border border-brand-emerald/20 relative overflow-hidden" style={{ background: 'var(--surface)' }}>
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-emerald to-transparent" />
 
                 <div className="flex items-center justify-between mb-8">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { VendorData } from '../types';
 import { Building, Hash, Phone, ChevronRight, Upload, FileText, Fingerprint, RefreshCw, Globe, Mail, Sparkles, CheckCircle2 } from 'lucide-react';
+import { API_ROUTES } from '../api';
 
 interface Props {
   data: VendorData;
@@ -15,7 +16,7 @@ const BusinessInfo: React.FC<Props> = ({ data, onChange, onNext }) => {
   const [showErrors, setShowErrors] = useState(false);
 
   useEffect(() => {
-    fetch('https://onboardingapi.bezawcurbside.com/api/onboard/business-types')
+    fetch(API_ROUTES.BUSINESS_TYPES)
       .then(r => r.json()).then(setBusinessTypes).catch(console.error);
   }, []);
 

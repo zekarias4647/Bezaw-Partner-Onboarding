@@ -11,7 +11,7 @@ const { sendStoreId, sendManagerCredentials } = require('../utils/email');
 
 // Ensure uploads directory exists
 const uploadDir = path.join(__dirname, '..', 'uploads');
-if (!fs.existsSync(uploadDir)) {
+if (!fs.existsSync(uploadDir)) {    
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
@@ -21,7 +21,9 @@ const storage = multer.diskStorage({
         cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname);
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname).toLowerCase();
+        cb(null, file.fieldname + '-' + uniqueSuffix + ext);
     }
 });
 
@@ -45,9 +47,9 @@ const upload = multer({
 
 // -------------------- ID Generator --------------------
 function generateId(prefix) {
-    const randomNum = Math.floor(Math.random() * 1000000); // 0 to 999999
-    const sixDigit = String(randomNum).padStart(6, '0');   // e.g., 000001
-    return `${prefix}-${sixDigit}`; // include dash
+    const crypto = require('crypto');
+    const randomNum = crypto.randomInt(100000, 999999); 
+    return `${prefix}-${randomNum}`;
 }
 
 const authenticateToken = (req, res, next) => {
@@ -97,16 +99,16 @@ router.post('/register', authenticateToken, upload.fields([
         // Handle uploaded files
         if (req.files) {
             if (req.files['logo']) {
-                vendor.logo = `uploads/${req.files['logo'][0].originalname}`;
+                vendor.logo = `uploads/${req.files['logo'][0].filename}`;
             }
             if (req.files['vatCert']) {
-                vendor.vatCert = `uploads/${req.files['vatCert'][0].originalname}`;
+                vendor.vatCert = `uploads/${req.files['vatCert'][0].filename}`;
             }
             if (req.files['businessLicense']) {
-                vendor.businessLicense = `uploads/${req.files['businessLicense'][0].originalname}`;
+                vendor.businessLicense = `uploads/${req.files['businessLicense'][0].filename}`;
             }
             if (req.files['image']) {
-                vendor.image = `uploads/${req.files['image'][0].originalname}`;
+                vendor.image = `uploads/${req.files['image'][0].filename}`;
             }
         }
 
@@ -299,6 +301,39 @@ router.post('/:supermarketId/branches', authenticateToken, async (req, res) => {
     } catch (err) {
         console.error('Error adding branch:', err);
         res.status(500).json({ error: 'Failed to add branch' });
+    }
+});
+
+// Delete a Branch (Protected)
+router.delete('/:supermarketId/branches/:branchId', authenticateToken, async (req, res) => {
+    const { supermarketId, branchId } = req.params;
+
+    // Security: ensure the JWT owner matches the vendor
+    if (req.user.id !== supermarketId) {
+        return res.status(403).json({ error: 'Unauthorized action' });
+    }
+
+    try {
+        // Verify the branch belongs to this vendor
+        const ownerCheck = await query(
+            'SELECT 1 FROM branches WHERE id = $1 AND vendor_id = $2',
+            [branchId, supermarketId]
+        );
+
+        if (ownerCheck.rows.length === 0) {
+            return res.status(404).json({ error: 'Branch not found or unauthorized' });
+        }
+
+        // Delete associated managers first (foreign key safety)
+        await query('DELETE FROM managers WHERE branch_id = $1', [branchId]);
+
+        // Delete the branch
+        await query('DELETE FROM branches WHERE id = $1', [branchId]);
+
+        res.json({ success: true, message: 'Branch deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting branch:', err);
+        res.status(500).json({ error: 'Failed to delete branch' });
     }
 });
 

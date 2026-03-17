@@ -16,6 +16,7 @@ import BranchDashboard from './components/BranchDashboard';
 import SingleBranchForm from './components/SingleBranchForm';
 import VendorSettings from './components/VendorSettings';
 import PageDecorations from './components/PageDecorations';
+import { API_ROUTES } from './api';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('LANDING');
@@ -54,7 +55,7 @@ const App: React.FC = () => {
     if (vendor.regCode) {
       try {
         const token = localStorage.getItem('authToken');
-        const res = await fetch(`https://onboardingapi.bezawcurbside.com/api/onboard/${vendor.regCode}/branches`, {
+        const res = await fetch(API_ROUTES.BRANCHES(vendor.regCode), {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) setBranches(await res.json());
@@ -126,9 +127,8 @@ const App: React.FC = () => {
         ref={headerRef}
         className="sticky top-0 z-40 transition-all duration-300"
         style={{
-          background: scrolled ? (theme === 'dark' ? 'rgba(2,13,9,0.85)' : 'rgba(255,255,255,0.85)') : 'transparent',
-          backdropFilter: scrolled ? 'blur(20px)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(16,185,129,0.1)' : '1px solid transparent',
+          background: scrolled ? (theme === 'dark' ? '#020d09' : '#ffffff') : 'transparent',
+          borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
         }}
       >
         <div className="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between">
@@ -173,10 +173,7 @@ const App: React.FC = () => {
               </button>
             )}
 
-            <div className="hidden sm:flex items-center gap-6 px-3 py-1.5 bg-brand-emerald/10 border border-brand-emerald/20 rounded-full text-[9px] font-black tracking-widest uppercase text-brand-emerald">
-              <div className="w-2 h-2 rounded-full bg-brand-emerald shadow-[0_0_8px_#10B981] animate-pulse" />
-              Live Network
-            </div>
+           
           </div>
         </div>
       </header>
@@ -201,7 +198,7 @@ const App: React.FC = () => {
               };
               setVendor(mappedVendor);
               try {
-                const res = await fetch(`https://onboardingapi.bezawcurbside.com/api/onboard/${data.id}/branches`, {
+                const res = await fetch(API_ROUTES.BRANCHES(data.id), {
                   headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (!res.ok) throw new Error('Failed to fetch branches');
@@ -222,6 +219,15 @@ const App: React.FC = () => {
               onSelect={(b) => { setSelectedBranch(b); setView('BRANCH_DASHBOARD'); }}
               onAddNew={() => setShowAddBranchModal(true)}
               onBack={() => setView('BRANCH_LOGIN')}
+              onBranchDeleted={async () => {
+                try {
+                  const token = localStorage.getItem('authToken');
+                  const res = await fetch(API_ROUTES.BRANCHES(vendor.regCode), {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                  });
+                  if (res.ok) setBranches(await res.json());
+                } catch (err) { console.error('Failed to refresh branches', err); }
+              }}
             />
             {showAddBranchModal && (
               <SingleBranchForm vendorId={vendor.regCode} onSuccess={handleBranchAdded} onCancel={() => setShowAddBranchModal(false)} />

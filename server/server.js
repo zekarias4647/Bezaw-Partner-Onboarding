@@ -16,7 +16,7 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 app.use(cors({
-  origin: ['https://onboarding.bezawcurbside.com', 'http://localhost:3000'],
+  origin: ['https://onboarding.bezawcurbside.com', 'http://localhost:3000', 'http://localhost:3002'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true

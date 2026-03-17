@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { VendorData, BranchData, ManagerData } from '../types';
 import { Rocket, Send, ArrowLeft, Building2, Store, Users, CheckCircle, Fingerprint, Sparkles } from 'lucide-react';
+import { API_ROUTES } from '../api';
 
 interface Props {
   vendor: VendorData;
@@ -29,7 +30,7 @@ const Summary: React.FC<Props> = ({ vendor, branches, managers, onBack, onComple
       formData.append('branches', JSON.stringify(branches));
       formData.append('managers', JSON.stringify(managers));
 
-      const response = await fetch('https://onboardingapi.bezawcurbside.com/api/onboard/register', {
+      const response = await fetch(API_ROUTES.REGISTER, {
         method: 'POST', body: formData,
       });
       if (!response.ok) throw new Error(`Submission failed: ${response.statusText}`);
@@ -104,7 +105,7 @@ const Summary: React.FC<Props> = ({ vendor, branches, managers, onBack, onComple
             </div>
             {vendor.logo && (
               <img
-                src={vendor.logo.startsWith('http') || vendor.logo.startsWith('data:') ? vendor.logo : `https://onboardingapi.bezawcurbside.com${vendor.logo.startsWith('/') ? '' : '/'}${vendor.logo}`}
+                src={vendor.logo.startsWith('http') || vendor.logo.startsWith('data:') ? vendor.logo : API_ROUTES.IMAGE_PATH(vendor.logo)}
                 className="w-10 h-10 object-contain rounded-xl border border-brand-emerald/20 bg-card p-1"
                 alt="Logo"
               />
