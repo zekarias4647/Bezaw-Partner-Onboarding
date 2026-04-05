@@ -69,12 +69,7 @@ const Landing: React.FC<Props> = ({ onSelectRegister, onSelectLogin }) => {
     return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize); };
   }, []);
 
-  const stats = [
-    { value: '120s', label: 'Max Handoff' },
-    { value: '24/7', label: 'Uptime' },
-    { value: '0', label: 'Upfront Cost' },
-    { value: '100%', label: 'Contactless' },
-  ];
+  
 
   return (
     <div className="flex-1 flex flex-col relative" style={{ minHeight: 'calc(100vh - 130px)' }}>
@@ -97,20 +92,7 @@ const Landing: React.FC<Props> = ({ onSelectRegister, onSelectLogin }) => {
             exponentially.
           </h1>
         </div>
-
-        <p className="animate-slideUp delay-300 text-center max-w-lg mb-10 text-sm opacity-60 leading-relaxed font-medium">
-          Join the Bezaw Partner network — the state-of-the-art curbside retail infrastructure in Ethiopia.
-          Register in minutes, scale for years.
-        </p>
-
-        <div className="animate-slideUp delay-400 flex flex-wrap justify-center gap-2 mb-12">
-          {stats.map((s, i) => (
-            <div key={i} className="px-5 py-3 rounded-2xl bg-brand-emerald/5 border border-brand-emerald/10 text-center min-w-[110px] hover:bg-brand-emerald/10 transition-all hover:scale-105">
-              <div className="font-display font-black text-2xl text-brand-emerald">{s.value}</div>
-              <div className="text-[9px] font-black tracking-widest uppercase opacity-40 mt-1">{s.label}</div>
-            </div>
-          ))}
-        </div>
+        
 
         <div className="animate-slideUp delay-500 grid sm:grid-cols-2 gap-6 w-full max-w-3xl">
           <button
