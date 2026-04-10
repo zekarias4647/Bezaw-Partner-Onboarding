@@ -77,7 +77,7 @@ router.get('/business-types', async (req, res) => {
 });
 
 // -------------------- Registration API --------------------
-router.post('/register', authenticateToken, upload.fields([
+router.post('/register', upload.fields([
     { name: 'logo', maxCount: 1 },
     { name: 'vatCert', maxCount: 1 },
     { name: 'businessLicense', maxCount: 1 },
@@ -422,5 +422,23 @@ router.delete('/managers/:managerId', authenticateToken, async (req, res) => {
 
 
 
+
+// Migration route for business_type
+router.get('/migrate', async (req, res) => {
+    try {
+        await query(`
+            DO $$ 
+            BEGIN 
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='vendors' AND column_name='business_type') THEN 
+                    ALTER TABLE vendors ADD COLUMN business_type VARCHAR(50) DEFAULT 'supermarket'; 
+                END IF; 
+            END $$;
+        `);
+        res.json({ success: true, message: 'Vendor table migration successful.' });
+    } catch (err) {
+        console.error('Migration failed:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 module.exports = router;

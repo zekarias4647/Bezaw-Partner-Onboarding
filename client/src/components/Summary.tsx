@@ -33,14 +33,26 @@ const Summary: React.FC<Props> = ({ vendor, branches, managers, onBack, onComple
       const response = await fetch(API_ROUTES.REGISTER, {
         method: 'POST', body: formData,
       });
-      if (!response.ok) throw new Error(`Submission failed: ${response.statusText}`);
+      
+      if (!response.ok) {
+        let errorMessage = `Submission failed: ${response.statusText}`;
+        try {
+          const errorData = await response.json();
+          if (errorData && errorData.error) {
+            errorMessage = errorData.error;
+          }
+        } catch (e) {
+          // Fallback to status text if JSON parsing fails
+        }
+        throw new Error(errorMessage);
+      }
 
       setSuccessDetails({ name: vendor.name, regCode: vendor.regCode });
       setTimeout(() => { setIsSubmitting(false); setSubmitted(true); }, 1500);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("Submission failed:", error);
       setIsSubmitting(false);
-      alert('Failed to submit registration. Please try again.');
+      alert(error.message || 'Failed to submit registration. Please try again.');
     }
   };
 
